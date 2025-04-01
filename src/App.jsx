@@ -1,11 +1,15 @@
+import { BrowserRouter, Routes, Route } from "react-router-dom";
+import HomePage from "./pages/Home"
 
 function App() {
 
   return (
     <>
-      <div className="text-center text-2xl font-bold mt-10">
-        Frontend for Helpdesk with tailwindcss.
-      </div>
+      <BrowserRouter>
+        <Routes>
+          <Route path="/" element={<HomePage />} />
+        </Routes>
+      </BrowserRouter>
     </>
   )
 }
