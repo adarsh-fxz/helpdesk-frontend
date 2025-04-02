@@ -1,6 +1,6 @@
 import React from "react";
 
-export const SignUp = () => {
+const SignUp = () => {
   return (
     <div className="bg-white flex justify-center w-full min-h-screen px-4 md:px-0">
       <div className="bg-white w-full max-w-[1440px] flex flex-col md:flex-row items-center md:items-stretch">
@@ -56,3 +56,5 @@ export const SignUp = () => {
     </div>
   );
 }
+
+export default SignUp;
