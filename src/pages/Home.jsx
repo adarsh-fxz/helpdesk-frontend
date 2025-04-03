@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { motion } from "framer-motion";
+import { useNavigate } from "react-router-dom";
 import {
   Ticket,
   MessageSquare,
@@ -20,6 +21,7 @@ import NavLink from "../components/NavLink";
 import MotionCard from "../components/MotionCard";
 
 const HomePage = () => {
+  const navigate = useNavigate();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isDarkMode, setIsDarkMode] = useState(() => {
     const savedTheme = localStorage.getItem("theme");
@@ -45,6 +47,14 @@ const HomePage = () => {
     });
   };
 
+  const handleSignIn = () => {
+    navigate('/signin');
+  };
+
+  const handleSignUp = () => {
+    navigate('/signup');
+  };
+
   return (
     <div className="flex flex-col min-h-screen">
       {/* Header */}
@@ -61,14 +71,14 @@ const HomePage = () => {
         <div className="flex items-center space-x-2">
           <button
             onClick={toggleTheme}
-            className="p-2 rounded-full hover:bg-blue-700 transition-all duration-300"
+            className="p-2 rounded-full hover:bg-blue-700 transition-all duration-300 cursor-pointer"
             aria-label="Toggle theme"
           >
             {isDarkMode ? <Sun className="w-6 h-6" /> : <Moon className="w-6 h-6" />}
           </button>
           <div className="hidden md:flex space-x-2">
-            <Button className="mr-2">Sign In</Button>
-            <Button>Sign Up</Button>
+            <Button onClick={handleSignIn} className="cursor-pointer">Sign In</Button>
+            <Button onClick={handleSignUp} className="cursor-pointer">Sign Up</Button>
           </div>
           <button
             onClick={() => setIsMenuOpen(true)}
@@ -106,8 +116,8 @@ const HomePage = () => {
           <NavLink href="#contact" onClick={() => setIsMenuOpen(false)}>
             Contact
           </NavLink>
-          <Button className="w-full max-w-xs">Sign In</Button>
-          <Button className="w-full max-w-xs">Sign Up</Button>
+          <Button onClick={handleSignIn} className="w-full max-w-xs">Sign In</Button>
+          <Button onClick={handleSignUp} className="w-full max-w-xs">Sign Up</Button>
         </div>
       )}
 
@@ -143,7 +153,7 @@ const HomePage = () => {
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8, delay: 0.4 }}
           >
-            <Button>Start Your Free Trial</Button>
+            <Button onClick={handleSignUp}>Start Your Free Trial</Button>
           </motion.div>
         </div>
       </main>
