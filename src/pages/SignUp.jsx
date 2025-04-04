@@ -128,15 +128,7 @@ export const SignUp = () => {
             </div>
           </div>
 
-          <p className="mt-4 text-center text-sm text-gray-600">
-            Already have an account?{' '}
-            <button
-              onClick={() => navigate('/signin')}
-              className="text-blue-600 hover:underline cursor-pointer"
-            >
-              Sign in
-            </button>
-          </p>
+     
         </div>
       </div>
     </div>
