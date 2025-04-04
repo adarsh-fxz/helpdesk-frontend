@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 import { Upload, ChevronRight, AlertCircle, Phone, MapPin, FileText } from "lucide-react";
 
 const UserProblem = () => {
@@ -8,7 +8,6 @@ const UserProblem = () => {
   const [location, setLocation] = useState("");
   const [phoneNumber, setPhoneNumber] = useState("");
   const [file, setFile] = useState(null);
-  const navigate = useNavigate();
 
   const previousRequests = [
     { id: 1, title: "TV screen not working", submittedTime: "Submitted 2 days ago", status: "In Progress" },
@@ -22,10 +21,6 @@ const UserProblem = () => {
   const handleSubmit = (e) => {
     e.preventDefault();
     console.log({ issue, category, location, phoneNumber, file });
-  };
-
-  const handleProfileClick = () => {
-    navigate("/UserProfile");
   };
 
   return (
@@ -47,15 +42,14 @@ const UserProblem = () => {
             <ChevronRight className="w-4 h-4 mr-1 rotate-180" />
             Back to Home
           </Link>
-          <div 
-            className="flex items-center space-x-2 cursor-pointer"
-            onClick={handleProfileClick}
-          >
-            <img 
-              src="/Kunga.png" 
-              alt="User Profile" 
-              className="w-8 h-8 rounded-full border-2 border-blue-100"
-            />
+          <div className="flex items-center space-x-2">
+            <Link to="/UserProfile">
+              <img 
+                src="/Kunga.png" 
+                alt="User Profile" 
+                className="w-8 h-8 rounded-full border-2 border-blue-100 hover:border-blue-300 transition-colors cursor-pointer"
+              />
+            </Link>
           </div>
         </div>
       </nav>
