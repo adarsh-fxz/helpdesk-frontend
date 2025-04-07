@@ -12,6 +12,7 @@ import Layout from './components/layout/Layout';
 import Technician from './components/Technician';
 import UsersList from './components/Users';
 import NotificationsPage from './components/NotificationsPage';
+import EditTicket from './components/EditTicket';
 
 function App() {
 
@@ -57,6 +58,11 @@ function App() {
           <Route path="/dashboard/notifications" element={
             <Layout>
               <NotificationsPage />
+            </Layout>
+          } />
+          <Route path="/dashboard/ticket/:id/edit" element={
+            <Layout>
+              <EditTicket />
             </Layout>
           } />
         </Routes>

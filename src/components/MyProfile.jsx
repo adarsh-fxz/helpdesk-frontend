@@ -88,7 +88,7 @@ const MyProfile = () => {
           <div>
             <h4 className="text-sm font-medium text-gray-500">Account Created</h4>
             <p className="mt-1 text-lg">
-              {new Date(profile.createdAt).toLocaleDateString()}
+              {new Date(profile.createdAt).toLocaleString()}
             </p>
           </div>
         </div>
