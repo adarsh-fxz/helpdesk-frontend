@@ -1,5 +1,14 @@
 import React from "react";
-import { Home, FileText, Users, Settings, MessageSquare, HelpCircle, LogOut, Bell } from "lucide-react";
+import {
+  Home,
+  FileText,
+  Users,
+  Settings,
+  MessageSquare,
+  HelpCircle,
+  LogOut,
+  Bell
+} from "lucide-react";
 import { Link, useNavigate, useLocation } from "react-router-dom";
 import Notification from "./Notification";
 
@@ -8,8 +17,8 @@ const Sidebar = () => {
   const location = useLocation();
 
   const handleLogout = () => {
-    localStorage.removeItem('token');
-    navigate('/Signin');
+    localStorage.removeItem("token");
+    navigate("/signin");
   };
 
   const menuItems = [
@@ -23,84 +32,62 @@ const Sidebar = () => {
     { icon: Settings, label: "Settings", path: "/dashboard/settings" },
   ];
 
+  const bottomMenuItems = [
+    { icon: MessageSquare, label: "Feedback", path: "#" },
+    { icon: HelpCircle, label: "Help & Docs", path: "#" },
+  ];
+
   return (
-    <nav className="w-64 bg-white p-6 border-r border-gray-200 shadow-lg h-screen flex flex-col fixed top-0 left-0 z-10">
-      {/* Header with subtle gradient */}
-      <div className="mb-8 pb-4 border-b border-gray-200">
-        <h2 className="text-2xl font-bold bg-gradient-to-r from-blue-600 to-blue-400 bg-clip-text text-transparent">
-          Dashboard
-        </h2>
-        <p className="text-xs text-gray-500 mt-1">Welcome back!</p>
-      </div>
-      
-      {/* Main Menu with better spacing and icons */}
-      <div className="space-y-2 flex-grow">
-        {menuItems.map((item, index) => (
-          <Link
-            key={index}
-            to={item.path}
-            className={`flex items-center p-3 rounded-lg transition-all duration-300 group ${
-              location.pathname === item.path 
-                ? "bg-blue-100/80 text-blue-700 font-semibold border-l-4 border-blue-500 shadow-inner" 
-                : "text-gray-600 hover:bg-blue-50/50 hover:text-blue-600"
-            }`}
-          >
-            <item.icon className={`w-5 h-5 mr-3 ${
-              location.pathname === item.path 
-                ? "text-blue-600" 
-                : "text-gray-500 group-hover:text-blue-500"
-            }`} />
-            <span>{item.label}</span>
-            {item.component && <item.component />}
-            {location.pathname !== item.path && (
-              <span className="ml-auto opacity-0 group-hover:opacity-100 transition-opacity">
-                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor">
-                  <path d="M9 18l6-6-6-6" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-                </svg>
-              </span>
-            )}
-          </Link>
-        ))}
+    <nav className="w-64 bg-white p-6 border-r shadow-lg h-screen flex flex-col sticky top-0">
+      <h2 className="text-2xl font-bold mb-6 text-blue-700 border-b pb-4 tracking-wide">Dashboard</h2>
+
+      <div className="space-y-1 flex-grow">
+        {menuItems.map((item, index) => {
+          const isActive = location.pathname === item.path;
+          const ActiveClasses =
+            "bg-blue-100 text-blue-700 font-medium border-l-4 border-blue-500";
+          const InactiveClasses =
+            "text-gray-600 hover:bg-blue-50 hover:text-blue-600";
+
+          return (
+            <Link
+              key={`${item.path}-${index}`}
+              to={item.path}
+              className={`flex items-center justify-between p-3 rounded-md transition-colors duration-200 ${
+                isActive ? ActiveClasses : InactiveClasses
+              }`}
+            >
+              <div className="flex items-center">
+                <item.icon className="w-5 h-5 mr-3" />
+                <span>{item.label}</span>
+              </div>
+              {item.component && <item.component />}
+            </Link>
+          );
+        })}
       </div>
 
-      {/* Footer with improved visual hierarchy */}
-      <div className="pt-4 flex flex-col border-t border-gray-200 space-y-2">
-        <a 
-          href="#" 
-          className="flex items-center p-3 text-gray-600 hover:bg-gray-100/50 hover:text-gray-800 rounded-lg transition-all duration-300 group"
-        >
-          <MessageSquare className="w-5 h-5 mr-3 text-gray-500 group-hover:text-blue-500" />
-          <span>Feedback</span>
-          <span className="ml-auto text-xs bg-blue-100 text-blue-600 px-2 py-1 rounded-full">New</span>
-        </a>
-        <a 
-          href="#" 
-          className="flex items-center p-3 text-gray-600 hover:bg-gray-100/50 hover:text-gray-800 rounded-lg transition-all duration-300 group"
-        >
-          <HelpCircle className="w-5 h-5 mr-3 text-gray-500 group-hover:text-blue-500" />
-          <span>Help & Docs</span>
-        </a>
+      <div className="pt-6 border-t mt-4 space-y-1">
+        {bottomMenuItems.map((item, index) => (
+          <a
+            key={`bottom-${index}`}
+            href={item.path}
+            className="flex items-center p-3 rounded-md text-gray-600 hover:bg-blue-50 hover:text-blue-600 transition-colors duration-200"
+          >
+            <item.icon className="w-5 h-5 mr-3" />
+            {item.label}
+          </a>
+        ))}
+
         <button
           onClick={handleLogout}
-          className="flex items-center p-3 text-gray-600 hover:bg-red-50 hover:text-red-600 rounded-lg transition-all duration-300 mt-4 group"
+          className="flex items-center p-3 rounded-md text-red-600 hover:bg-red-100 hover:text-red-700 transition-colors duration-200 w-full"
         >
-          <LogOut className="w-5 h-5 mr-3 text-gray-500 group-hover:text-red-500" />
-          <span>Logout</span>
+          <LogOut className="w-5 h-5 mr-3" />
+          Logout
         </button>
       </div>
-
-      {/* User profile mini-card at the bottom */}
-      <div className="mt-auto pt-4 border-t border-gray-200">
-        <div className="flex items-center p-2 rounded-lg hover:bg-gray-100/50 transition-colors cursor-pointer">
-          <div className="w-8 h-8 rounded-full bg-blue-500 flex items-center justify-center text-white font-semibold mr-3">
-            U
-          </div>
-          <div>
-            <p className="text-sm font-medium">User Name</p>
-            <p className="text-xs text-gray-500">Admin</p>
-          </div>
-        </div>
-      </div>
+      
     </nav>
   );
 };

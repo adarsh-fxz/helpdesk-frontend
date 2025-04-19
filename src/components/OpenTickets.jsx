@@ -53,7 +53,6 @@ const OpenTickets = () => {
         throw new Error('Failed to update ticket status');
       }
 
-
       fetchOpenTickets();
     } catch (error) {
       console.error('Error updating ticket status:', error);
@@ -77,7 +76,6 @@ const OpenTickets = () => {
       if (!response.ok) {
         throw new Error('Failed to delete ticket');
       }
-      
 
       fetchOpenTickets();
     } catch (error) {
