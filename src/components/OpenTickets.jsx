@@ -53,7 +53,6 @@ const OpenTickets = () => {
         throw new Error('Failed to update ticket status');
       }
 
-      // Refresh the ticket list
       fetchOpenTickets();
     } catch (error) {
       console.error('Error updating ticket status:', error);
@@ -78,7 +77,6 @@ const OpenTickets = () => {
         throw new Error('Failed to delete ticket');
       }
 
-      // Refresh the ticket list
       fetchOpenTickets();
     } catch (error) {
       console.error('Error deleting ticket:', error);
@@ -89,6 +87,31 @@ const OpenTickets = () => {
   useEffect(() => {
     fetchOpenTickets();
   }, []);
+
+  // Group tickets by status
+  const groupedTickets = tickets.reduce((acc, ticket) => {
+    if (!acc[ticket.status]) {
+      acc[ticket.status] = [];
+    }
+    acc[ticket.status].push(ticket);
+    return acc;
+  }, {});
+
+  // Define status columns in the order we want them displayed
+  const statusColumns = [
+    { id: 'OPEN', title: 'Open', color: 'orange' },
+    { id: 'IN_PROGRESS', title: 'In Progress', color: 'yellow' },
+    { id: 'RESOLVED', title: 'Resolved', color: 'green' },
+    { id: 'CLOSED', title: 'Closed', color: 'gray' }
+  ];
+
+  // Calculate percentages for each status
+  const totalTickets = tickets.length;
+  const statusPercentages = statusColumns.reduce((acc, status) => {
+    const count = groupedTickets[status.id]?.length || 0;
+    acc[status.id] = totalTickets > 0 ? Math.round((count / totalTickets) * 100) : 0;
+    return acc;
+  }, {});
 
   if (loading) {
     return (
@@ -121,85 +144,94 @@ const OpenTickets = () => {
   }
 
   return (
-    <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-      {tickets.map((ticket) => (
-        <div key={ticket.id} className="bg-white rounded-xl shadow-lg overflow-hidden hover:shadow-xl transition-shadow duration-300">
-          <div className="p-6">
-            <div className="flex justify-between items-start mb-4">
-              <div className="flex-1">
-                <h3 className="text-xl font-semibold text-gray-900 mb-2">{ticket.title}</h3>
-                <p className="text-gray-600 line-clamp-2">{ticket.description}</p>
-              </div>
-              <div className="flex space-x-2">
-                <button
-                  onClick={() => navigate(`/dashboard/ticket/${ticket.id}/edit`)}
-                  className="p-2 text-gray-400 hover:text-blue-500 transition-colors duration-200"
-                  title="Edit ticket"
-                >
-                  <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
-                  </svg>
-                </button>
-                <button
-                  onClick={() => handleStatusUpdate(ticket.id, 'IN_PROGRESS')}
-                  className="p-2 text-gray-400 hover:text-blue-500 transition-colors duration-200"
-                  title="Start working on ticket"
-                >
-                  <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 5l7 7-7 7" />
-                  </svg>
-                </button>
-                <button
-                  onClick={() => handleDelete(ticket.id)}
-                  className="p-2 text-gray-400 hover:text-red-500 transition-colors duration-200"
-                  title="Delete ticket"
-                >
-                  <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
-                  </svg>
-                </button>
-              </div>
-            </div>
-
-            <div className="flex items-center justify-between mb-4">
-              <div className="flex items-center space-x-2">
-                <div className="w-8 h-8 rounded-full bg-blue-100 flex items-center justify-center">
-                  <span className="text-sm font-medium text-blue-600">
-                    {ticket.createdBy?.name?.charAt(0)?.toUpperCase() || '?'}
-                  </span>
-                </div>
-                <span className="text-sm text-gray-600">{ticket.createdBy?.name || 'Unknown'}</span>
-              </div>
-              <span className="px-3 py-1 rounded-full text-xs font-medium bg-green-100 text-green-800">
-                {ticket.status}
+    <div className="space-y-6">
+      {/* Status Summary Section */}
+      <div className="flex justify-between items-center bg-white p-4 rounded-lg shadow">
+        <div className="flex items-center space-x-4">
+          <div className="text-sm font-medium">All Statuses</div>
+          <div className="text-sm text-gray-500">Newest First</div>
+        </div>
+        <button className="text-sm text-blue-500 hover:text-blue-700">Advanced Filters</button>
+      </div>
+  
+      {/* Status Columns */}
+      <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+        {statusColumns.map((status) => (
+          <div key={status.id} className="bg-white p-4 rounded-lg shadow">
+            <div className="flex justify-between items-center mb-4">
+              <h3 className="font-medium">
+                {status.title} <span className="text-gray-500">{groupedTickets[status.id]?.length || 0}</span>
+              </h3>
+              <span className="text-sm bg-blue-100 text-blue-800 px-2 py-1 rounded">
+                {statusPercentages[status.id]}%
               </span>
             </div>
-
-            {ticket.imageUrls && ticket.imageUrls.length > 0 && (
-              <div className="mt-4 grid grid-cols-2 gap-2">
-                {ticket.imageUrls.map((url, index) => (
-                  <div key={index} className="relative aspect-video rounded-lg overflow-hidden">
-                    <img
-                      src={url}
-                      alt={`Ticket image ${index + 1}`}
-                      className="absolute inset-0 w-full h-full object-cover"
-                    />
+            
+            {/* Ticket Cards */}
+            <div className="space-y-4">
+              {groupedTickets[status.id]?.map((ticket) => (
+                <div key={ticket._id} className="border rounded-lg p-4 hover:shadow-md transition-shadow">
+                  <div className="flex justify-between items-start mb-2">
+                    <h4 className="font-medium text-blue-600">#{ticket.ticketId}</h4>
+                    <span className={`text-xs bg-${status.color}-100 text-${status.color}-800 px-2 py-1 rounded`}>
+                      {status.title}
+                    </span>
                   </div>
-                ))}
-              </div>
-            )}
-
-            <div className="mt-4 pt-4 border-t border-gray-100">
-              <div className="flex items-center justify-between text-sm text-gray-500">
-                <span>Created on</span>
-                <span className="font-medium">{new Date(ticket.createdAt).toLocaleDateString()}</span>
-              </div>
+                  <h5 className="font-medium mb-2">{ticket.title}</h5>
+                  <ul className="text-xs text-gray-500 space-y-1">
+                    <li className="flex items-center">
+                      <input type="checkbox" className="mr-2" checked={ticket.assignedTo} readOnly />
+                      <span>Assigned to {ticket.assignedTo || 'IT Team'}</span>
+                    </li>
+                    <li className="flex items-center">
+                      <input type="checkbox" className="mr-2" checked={ticket.updatedAt} readOnly />
+                      <span>
+                        Updated {ticket.updatedAt ? 
+                        new Date(ticket.updatedAt).toLocaleDateString() : 
+                        'N/A'}
+                      </span>
+                    </li>
+                    <li className="flex items-center">
+                      <input type="checkbox" className="mr-2" checked={ticket.createdAt} readOnly />
+                      <span>Created {new Date(ticket.createdAt).toLocaleDateString()}</span>
+                    </li>
+                  </ul>
+                  <div className="mt-2 flex space-x-2">
+                    <button
+                      onClick={() => navigate(`/dashboard/ticket/${ticket._id}/edit`)}
+                      className="text-xs text-blue-500 hover:text-blue-700"
+                      title="Edit ticket"
+                    >
+                      Edit
+                    </button>
+                    {status.id !== 'CLOSED' && (
+                      <button
+                        onClick={() => handleStatusUpdate(ticket._id, 
+                          status.id === 'OPEN' ? 'IN_PROGRESS' : 
+                          status.id === 'IN_PROGRESS' ? 'RESOLVED' : 'CLOSED')}
+                        className="text-xs text-green-500 hover:text-green-700"
+                        title="Update status"
+                      >
+                        {status.id === 'OPEN' ? 'Start' : 
+                         status.id === 'IN_PROGRESS' ? 'Resolve' : 'Close'}
+                      </button>
+                    )}
+                    <button
+                      onClick={() => handleDelete(ticket._id)}
+                      className="text-xs text-red-500 hover:text-red-700"
+                      title="Delete ticket"
+                    >
+                      Delete
+                    </button>
+                  </div>
+                </div>
+              ))}
             </div>
           </div>
-        </div>
-      ))}
+        ))}
+      </div>
     </div>
   );
 };
 
-export default OpenTickets; 
+export default OpenTickets;
