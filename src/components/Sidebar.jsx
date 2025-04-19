@@ -38,8 +38,8 @@ const Sidebar = () => {
   ];
 
   return (
-    <nav className="w-64 bg-white p-6 border-r shadow-lg h-screen flex flex-col sticky top-0">
-      <h2 className="text-2xl font-bold mb-6 text-blue-700 border-b pb-4 tracking-wide">Dashboard</h2>
+    <nav className="w-64 bg-white p-6 shadow-lg h-screen flex flex-col sticky top-0">
+      <h2 className="text-2xl font-bold mb-6 text-blue-700 tracking-wide">Dashboard</h2>
 
       <div className="space-y-1 flex-grow">
         {menuItems.map((item, index) => {
@@ -67,7 +67,7 @@ const Sidebar = () => {
         })}
       </div>
 
-      <div className="pt-6 border-t mt-4 space-y-1">
+      <div className="mt-4 space-y-1">
         {bottomMenuItems.map((item, index) => (
           <a
             key={`bottom-${index}`}
