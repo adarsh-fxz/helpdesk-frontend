@@ -1,8 +1,9 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { GoogleOAuthProvider, GoogleLogin } from '@react-oauth/google';
 import axios from 'axios';
 
-const Signin = () => {
+const SigninForm = () => {
   const navigate = useNavigate();
   const [formData, setFormData] = useState({ email: '', password: '' });
   const [error, setError] = useState('');
@@ -29,6 +30,22 @@ const Signin = () => {
     }
   };
 
+  const handleGoogleSuccess = async (credentialResponse) => {
+    setError('');
+    setLoading(true);
+    try {
+      const { data } = await axios.post('http://localhost:3000/api/auth/google', {
+        token: credentialResponse.credential,
+      });
+      localStorage.setItem('token', data.token);
+      navigate('/dashboard');
+    } catch (err) {
+      setError('Google login failed. Please try again.');
+    } finally {
+      setLoading(false);
+    }
+  };
+
   return (
     <div className="min-h-screen bg-gray-100 flex items-center justify-center p-4">
       <div className="max-w-5xl w-full bg-white rounded-xl shadow-lg overflow-hidden flex flex-col md:flex-row">
@@ -44,7 +61,7 @@ const Signin = () => {
         {/* Form Section */}
         <div className="md:w-1/2 p-8">
           <h2 className="text-2xl font-bold text-center text-gray-800 mb-6">Sign In</h2>
-          
+
           {error && (
             <div className="mb-4 p-3 bg-red-100 text-red-700 rounded-md">
               {error}
@@ -114,9 +131,10 @@ const Signin = () => {
             </div>
 
             <div className="mt-6 grid grid-cols-2 gap-3">
-              <button className="flex items-center justify-center py-2 px-4 border border-gray-300 rounded-md hover:bg-gray-50">
-                Google
-              </button>
+              <GoogleLogin
+                onSuccess={handleGoogleSuccess}
+                onError={() => setError('Google login failed')}
+              />
               <button className="flex items-center justify-center py-2 px-4 border border-gray-300 rounded-md hover:bg-gray-50">
                 GitHub
               </button>
@@ -137,5 +155,11 @@ const Signin = () => {
     </div>
   );
 };
+
+const Signin = () => (
+  <GoogleOAuthProvider clientId="822808711972-7u9f3kbplremd59dalrbl91lja61qnrd.apps.googleusercontent.com">
+    <SigninForm />
+  </GoogleOAuthProvider>
+);
 
 export default Signin;
