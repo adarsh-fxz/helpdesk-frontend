@@ -6,6 +6,7 @@ import MyProfile from './components/MyProfile';
 import CreateTicket from './components/CreateTicket';
 import MyTickets from './components/MyTickets';
 import OpenTickets from './components/OpenTickets';
+import TicketDetail from "./components/TicketDetail";
 import Dashboard from './pages/Dashboard';
 import Setting from './components/Setting';
 import Layout from './components/layout/Layout';
@@ -43,6 +44,11 @@ function App() {
           <Route path="/dashboard/open-tickets" element={
             <Layout>
               <OpenTickets />
+            </Layout>
+          } />
+          <Route path="/open-ticket/TicketDetail" element={ 
+            <Layout>
+              <TicketDetail/> 
             </Layout>
           } />
           <Route path="/dashboard/technician" element={

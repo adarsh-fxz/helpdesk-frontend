@@ -1,14 +1,5 @@
 import React from "react";
-import {
-  Home,
-  FileText,
-  Users,
-  Settings,
-  MessageSquare,
-  HelpCircle,
-  LogOut,
-  Bell
-} from "lucide-react";
+import { Home,FileText,Users,Settings,MessageSquare,HelpCircle,LogOut,Bell} from "lucide-react";
 import { Link, useNavigate, useLocation } from "react-router-dom";
 import Notification from "./Notification";
 
@@ -87,7 +78,7 @@ const Sidebar = () => {
           Logout
         </button>
       </div>
-      
+
     </nav>
   );
 };

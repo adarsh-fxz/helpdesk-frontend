@@ -1,9 +1,11 @@
 import { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 
 const MyProfile = () => {
   const [profile, setProfile] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
+  const navigate = useNavigate();
 
   useEffect(() => {
     const fetchProfile = async () => {
@@ -38,6 +40,10 @@ const MyProfile = () => {
     fetchProfile();
   }, []);
 
+  const handleVerifyClick = () => {
+    navigate('/verification-form');
+  };
+
   if (loading) {
     return (
       <div className="flex justify-center items-center h-64">
@@ -70,26 +76,41 @@ const MyProfile = () => {
         <div className="flex items-center space-x-4">
           <div className="w-20 h-20 rounded-full bg-blue-100 flex items-center justify-center">
             <span className="text-3xl font-bold text-blue-600">
-              {profile.name?.charAt(0).toUpperCase() || '?'}
+              {profile.name?.charAt(0).toUpperCase() || 'U'}
             </span>
           </div>
           <div>
-            <h3 className="text-xl font-semibold">{profile.name}</h3>
-            <p className="text-gray-600">{profile.email}</p>
+            <h3 className="text-xl font-semibold">{profile.name || 'unik'}</h3>
+            <p className="text-gray-600">{profile.email || 'unik@gmail.com'}</p>
+            {profile.isVerified && (
+              <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800">
+                Verified
+              </span>
+            )}
           </div>
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           <div>
             <h4 className="text-sm font-medium text-gray-500">Role</h4>
-            <p className="mt-1 text-lg capitalize">{profile.role}</p>
+            <p className="mt-1 text-lg capitalize">{profile.role || 'USER'}</p>
           </div>
 
-          <div>
-            <h4 className="text-sm font-medium text-gray-500">Account Created</h4>
-            <p className="mt-1 text-lg">
-              {new Date(profile.createdAt).toLocaleString()}
-            </p>
+          <div className="flex justify-between items-end">
+            <div>
+              <h4 className="text-sm font-medium text-gray-500">Account Created</h4>
+              <p className="mt-1 text-lg">
+                {profile.createdAt ? new Date(profile.createdAt).toLocaleString() : '4/21/2025, 11:59:36 AM'}
+              </p>
+            </div>
+            {!profile.isVerified && (
+              <button
+                onClick={handleVerifyClick}
+                className="bg-green-600 hover:bg-green-700 text-white font-medium py-2 px-4 rounded-lg transition-colors h-fit"
+              >
+                Verify
+              </button>
+            )}
           </div>
         </div>
 
@@ -123,4 +144,4 @@ const MyProfile = () => {
   );
 };
 
-export default MyProfile; 
+export default MyProfile;
