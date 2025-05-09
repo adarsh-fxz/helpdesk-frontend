@@ -64,10 +64,17 @@ const Sidebar = () => {
         </Link>
       </div>
       <div className="pt-6 flex flex-col border-t">
-        <a href="#" className="flex items-center p-3 text-gray-600 hover:bg-blue-50 hover:text-blue-600">
+        <Link
+          to="/dashboard/feedback"
+          className={`flex items-center p-3 rounded-lg ${
+            location.pathname === "/dashboard/feedback"
+              ? "bg-blue-100 text-blue-700 font-medium border-l-4 border-blue-500"
+              : "text-gray-600 hover:bg-blue-50 hover:text-blue-600"
+          }`}
+        >
           <MessageSquare className="w-5 h-5 mr-3" />
           Feedback
-        </a>
+        </Link>
         <Link
           to="/dashboard/help-docs"
           className={`flex items-center p-3 rounded-lg ${

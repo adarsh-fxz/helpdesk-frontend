@@ -14,6 +14,7 @@ import UsersList from './components/Users';
 import NotificationsPage from './components/NotificationsPage';
 import EditTicket from './components/EditTicket';
 import HelpDocs from './components/HelpDocs';
+import Feedback from './components/Feedback';
 
 function App() {
 
@@ -69,6 +70,11 @@ function App() {
           <Route path="/dashboard/help-docs" element={
             <Layout>
               <HelpDocs />
+            </Layout>
+          } />
+          <Route path="/dashboard/feedback" element={
+            <Layout>
+              <Feedback />
             </Layout>
           } />
         </Routes>
