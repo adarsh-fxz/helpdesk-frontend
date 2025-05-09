@@ -68,10 +68,17 @@ const Sidebar = () => {
           <MessageSquare className="w-5 h-5 mr-3" />
           Feedback
         </a>
-        <a href="#" className="flex items-center p-3 text-gray-600 hover:bg-blue-50 hover:text-blue-600">
+        <Link
+          to="/dashboard/help-docs"
+          className={`flex items-center p-3 rounded-lg ${
+            location.pathname === "/dashboard/help-docs"
+              ? "bg-blue-100 text-blue-700 font-medium border-l-4 border-blue-500"
+              : "text-gray-600 hover:bg-blue-50 hover:text-blue-600"
+          }`}
+        >
           <HelpCircle className="w-5 h-5 mr-3" />
           Help & Docs
-        </a>
+        </Link>
         <button
           onClick={handleLogout}
           className="flex items-center p-3 text-red-600 hover:bg-red-50 hover:text-red-700"

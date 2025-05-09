@@ -13,6 +13,7 @@ import Technician from './components/Technician';
 import UsersList from './components/Users';
 import NotificationsPage from './components/NotificationsPage';
 import EditTicket from './components/EditTicket';
+import HelpDocs from './components/HelpDocs';
 
 function App() {
 
@@ -63,6 +64,11 @@ function App() {
           <Route path="/dashboard/ticket/:id/edit" element={
             <Layout>
               <EditTicket />
+            </Layout>
+          } />
+          <Route path="/dashboard/help-docs" element={
+            <Layout>
+              <HelpDocs />
             </Layout>
           } />
         </Routes>
