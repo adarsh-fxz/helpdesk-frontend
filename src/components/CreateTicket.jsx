@@ -1,4 +1,5 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
+import { GoogleMap, useLoadScript, Marker } from '@react-google-maps/api';
 
 const CreateTicket = () => {
   const [title, setTitle] = useState('');
@@ -7,6 +8,34 @@ const CreateTicket = () => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
   const [success, setSuccess] = useState(false);
+  const [location, setLocation] = useState('');
+  const [latitude, setLatitude] = useState(null);
+  const [longitude, setLongitude] = useState(null);
+  const [mapCenter, setMapCenter] = useState({ lat: 0, lng: 0 });
+  const [showMap, setShowMap] = useState(false);
+  const [mapError, setMapError] = useState('');
+
+  const { isLoaded, loadError } = useLoadScript({
+    googleMapsApiKey: import.meta.env.VITE_GOOGLE_MAPS_API_KEY,
+  });
+
+  useEffect(() => {
+    // Get user's current location
+    if (navigator.geolocation) {
+      navigator.geolocation.getCurrentPosition(
+        (position) => {
+          const { latitude, longitude } = position.coords;
+          setLatitude(latitude);
+          setLongitude(longitude);
+          setMapCenter({ lat: latitude, lng: longitude });
+        },
+        (error) => {
+          console.error('Error getting location:', error);
+          setMapError('Unable to get your current location. Please select a location on the map.');
+        }
+      );
+    }
+  }, []);
 
   const handleImageUrlChange = (index, value) => {
     const newImageUrls = [...imageUrls];
@@ -21,6 +50,15 @@ const CreateTicket = () => {
   const removeImageUrlField = (index) => {
     const newImageUrls = imageUrls.filter((_, i) => i !== index);
     setImageUrls(newImageUrls);
+  };
+
+  const handleMapClick = (e) => {
+    const lat = e.latLng.lat();
+    const lng = e.latLng.lng();
+    setLatitude(lat);
+    setLongitude(lng);
+    setMapCenter({ lat, lng });
+    setMapError('');
   };
 
   const handleSubmit = async (e) => {
@@ -43,6 +81,9 @@ const CreateTicket = () => {
           title,
           description,
           imageUrls: validImageUrls,
+          location,
+          latitude,
+          longitude,
           notify: true
         })
       });
@@ -56,6 +97,9 @@ const CreateTicket = () => {
       setTitle('');
       setDescription('');
       setImageUrls(['']);
+      setLocation('');
+      setLatitude(null);
+      setLongitude(null);
       setSuccess(true);
     } catch (error) {
       console.error('Error creating ticket:', error);
@@ -63,6 +107,41 @@ const CreateTicket = () => {
     } finally {
       setLoading(false);
     }
+  };
+
+  const renderMap = () => {
+    if (loadError) {
+      return (
+        <div className="bg-yellow-100 border border-yellow-400 text-yellow-700 px-4 py-3 rounded">
+          Error loading Google Maps. Please check your API key and billing status.
+        </div>
+      );
+    }
+
+    if (!isLoaded) {
+      return (
+        <div className="h-[400px] rounded-lg overflow-hidden border border-gray-300 flex items-center justify-center bg-gray-50">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-500"></div>
+        </div>
+      );
+    }
+
+    return (
+      <div className="h-[400px] rounded-lg overflow-hidden border border-gray-300">
+        <GoogleMap
+          mapContainerStyle={{ width: '100%', height: '100%' }}
+          center={mapCenter}
+          zoom={15}
+          onClick={handleMapClick}
+        >
+          {latitude && longitude && (
+            <Marker
+              position={{ lat: latitude, lng: longitude }}
+            />
+          )}
+        </GoogleMap>
+      </div>
+    );
   };
 
   return (
@@ -113,6 +192,40 @@ const CreateTicket = () => {
         </div>
 
         <div>
+          <label htmlFor="location" className="block text-sm font-medium text-gray-700">
+            Location
+          </label>
+          <div className="mt-1 flex space-x-2">
+            <input
+              type="text"
+              id="location"
+              value={location}
+              onChange={(e) => setLocation(e.target.value)}
+              className="flex-1 px-4 py-2 rounded-md border border-gray-300 shadow-sm focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition-colors"
+              placeholder="Eg: nearby Herald College Kathmandu"
+            />
+            <button
+              type="button"
+              onClick={() => setShowMap(!showMap)}
+              className="px-4 py-2 bg-gray-100 text-gray-700 rounded-md hover:bg-gray-200 focus:outline-none focus:ring-2 focus:ring-gray-200"
+            >
+              {showMap ? 'Hide Map' : 'Show Map'}
+            </button>
+          </div>
+        </div>
+
+        {showMap && (
+          <div className="space-y-2">
+            {mapError && (
+              <div className="bg-yellow-100 border border-yellow-400 text-yellow-700 px-4 py-3 rounded">
+                {mapError}
+              </div>
+            )}
+            {renderMap()}
+          </div>
+        )}
+
+        <div>
           <label className="block text-sm font-medium text-gray-700 mb-2">
             Image URLs
           </label>
@@ -122,7 +235,7 @@ const CreateTicket = () => {
                 type="text"
                 value={url}
                 onChange={(e) => handleImageUrlChange(index, e.target.value)}
-                placeholder="Enter image URL or any text"
+                placeholder="Enter image URL"
                 className="flex-1 px-4 py-2 rounded-md border border-gray-300 shadow-sm focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition-colors"
               />
               {index > 0 && (

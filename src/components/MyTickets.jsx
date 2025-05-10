@@ -1,11 +1,17 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { GoogleMap, useLoadScript, Marker } from '@react-google-maps/api';
 
 const MyTickets = () => {
   const [tickets, setTickets] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
+  const [selectedTicket, setSelectedTicket] = useState(null);
   const navigate = useNavigate();
+
+  const { isLoaded } = useLoadScript({
+    googleMapsApiKey: import.meta.env.VITE_GOOGLE_MAPS_API_KEY,
+  });
 
   const fetchTickets = async () => {
     try {
@@ -97,73 +103,107 @@ const MyTickets = () => {
   }
 
   return (
-    <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+    <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-3 p-4 justify-center">
       {tickets.map((ticket) => (
-        <div key={ticket.id} className="bg-white rounded-xl shadow-lg overflow-hidden hover:shadow-xl transition-shadow duration-300">
-          <div className="p-6">
-            <div className="flex justify-between items-start mb-4">
-              <div className="flex-1">
-                <h3 className="text-xl font-semibold text-gray-900 mb-2">{ticket.title}</h3>
-                <p className="text-gray-600 line-clamp-2">{ticket.description}</p>
+        <div
+          key={ticket.id}
+          className="bg-white rounded-2xl shadow-lg overflow-hidden hover:shadow-2xl transition-shadow duration-300 flex flex-col h-full border border-gray-100 relative mx-auto max-w-md w-full"
+          style={{ minHeight: 520, maxHeight: 600 }}
+        >
+          {/* Status badge at top right */}
+          <span className={`absolute top-4 right-4 px-3 py-1 rounded-full text-xs font-semibold shadow-sm
+            ${ticket.status === 'OPEN' ? 'bg-green-100 text-green-800' :
+              ticket.status === 'ASSIGNED' ? 'bg-blue-100 text-blue-800' :
+              ticket.status === 'IN_PROGRESS' ? 'bg-yellow-100 text-yellow-800' :
+              'bg-gray-100 text-gray-800'}
+          `}>
+            {ticket.status}
+          </span>
+
+          <div className="p-4 flex flex-col flex-1 overflow-y-auto">
+            {/* Title & Description */}
+            <h3 className="text-base font-bold text-gray-900 mb-1 truncate">{ticket.title}</h3>
+            <p className="text-gray-600 text-sm mb-2 line-clamp-2 min-h-[2.5em]">{ticket.description}</p>
+
+            {/* Creator */}
+            <div className="flex items-center space-x-2 mb-2">
+              <div className="w-7 h-7 rounded-full bg-blue-100 flex items-center justify-center">
+                <span className="text-xs font-medium text-blue-600">
+                  {ticket.createdBy?.name?.charAt(0)?.toUpperCase() || '?'}
+                </span>
               </div>
-              <div className="flex space-x-2">
+              <span className="text-xs text-gray-600 font-medium">{ticket.createdBy?.name || 'Unknown'}</span>
+            </div>
+
+            {/* Location & Map */}
+            {ticket.location && (
+              <div className="mb-2">
+                <div className="flex items-center text-xs text-gray-500 mb-1">
+                  <svg className="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
+                  </svg>
+                  {ticket.location}
+                </div>
+                {ticket.latitude && ticket.longitude && isLoaded && (
+                  <div className="h-28 rounded-lg overflow-hidden border border-gray-200 mb-1">
+                    <GoogleMap
+                      mapContainerStyle={{ width: '100%', height: '100%' }}
+                      center={{ lat: ticket.latitude, lng: ticket.longitude }}
+                      zoom={15}
+                    >
+                      <Marker position={{ lat: ticket.latitude, lng: ticket.longitude }} />
+                    </GoogleMap>
+                  </div>
+                )}
+              </div>
+            )}
+
+            {/* Images */}
+            {ticket.imageUrls && ticket.imageUrls.length > 0 && (
+              <div className="mb-2">
+                <div className="grid grid-cols-1 gap-1">
+                  {ticket.imageUrls.map((url, index) => (
+                    <div key={index} className="relative aspect-video rounded-lg overflow-hidden border border-gray-200">
+                      <img
+                        src={url}
+                        alt={`Ticket image ${index + 1}`}
+                        className="absolute inset-0 w-full h-full object-cover"
+                      />
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
+
+            {/* Divider */}
+            <div className="border-t border-gray-100 my-1"></div>
+
+            {/* Footer: Date & Actions */}
+            <div className="flex items-center justify-between mt-auto pt-1">
+              <div className="text-xs text-gray-500">
+                <span>Created on </span>
+                <span className="font-medium">{new Date(ticket.createdAt).toLocaleDateString(undefined, { year: 'numeric', month: 'short', day: 'numeric' })}</span>
+              </div>
+              <div className="flex space-x-1">
                 <button
                   onClick={() => navigate(`/dashboard/ticket/${ticket.id}/edit`)}
-                  className="p-2 text-gray-400 hover:text-blue-500 transition-colors duration-200"
+                  className="p-1 text-gray-400 hover:text-blue-500 transition-colors duration-200"
                   title="Edit ticket"
                 >
-                  <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
                   </svg>
                 </button>
                 <button
                   onClick={() => handleDelete(ticket.id)}
-                  className="p-2 text-gray-400 hover:text-red-500 transition-colors duration-200"
+                  className="p-1 text-gray-400 hover:text-red-500 transition-colors duration-200"
                   title="Delete ticket"
                 >
-                  <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
                   </svg>
                 </button>
-              </div>
-            </div>
-
-            <div className="flex items-center justify-between mb-4">
-              <div className="flex items-center space-x-2">
-                <div className="w-8 h-8 rounded-full bg-blue-100 flex items-center justify-center">
-                  <span className="text-sm font-medium text-blue-600">
-                    {ticket.createdBy?.name?.charAt(0)?.toUpperCase() || '?'}
-                  </span>
-                </div>
-                <span className="text-sm text-gray-600">{ticket.createdBy?.name || 'Unknown'}</span>
-              </div>
-              <span className={`px-3 py-1 rounded-full text-xs font-medium ${
-                ticket.status === 'OPEN' ? 'bg-green-100 text-green-800' :
-                ticket.status === 'IN_PROGRESS' ? 'bg-yellow-100 text-yellow-800' :
-                'bg-gray-100 text-gray-800'
-              }`}>
-                {ticket.status}
-              </span>
-            </div>
-
-            {ticket.imageUrls && ticket.imageUrls.length > 0 && (
-              <div className="mt-4 grid grid-cols-2 gap-2">
-                {ticket.imageUrls.map((url, index) => (
-                  <div key={index} className="relative aspect-video rounded-lg overflow-hidden">
-                    <img
-                      src={url}
-                      alt={`Ticket image ${index + 1}`}
-                      className="absolute inset-0 w-full h-full object-cover"
-                    />
-                  </div>
-                ))}
-              </div>
-            )}
-
-            <div className="mt-4 pt-4 border-t border-gray-100">
-              <div className="flex items-center justify-between text-sm text-gray-500">
-                <span>Created on</span>
-                <span className="font-medium">{new Date(ticket.createdAt).toLocaleString()}</span>
               </div>
             </div>
           </div>
