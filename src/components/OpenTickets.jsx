@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { GoogleMap, useLoadScript, Marker } from '@react-google-maps/api';
+import { ClipboardList, Search } from 'lucide-react';
 
 const OpenTickets = () => {
   const [tickets, setTickets] = useState([]);
@@ -163,25 +164,27 @@ const OpenTickets = () => {
   }
 
   return (
-    <div className="space-y-4">
-      {/* Filter Section */}
-      <div className="flex justify-end px-4">
-        <div className="relative">
+    <div className="space-y-4 p-4 md:p-8">
+      {/* Topic Card Section */}
+      <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-6">
+        <div className="flex items-center space-x-4 mb-4 md:mb-0">
+          <ClipboardList className="w-8 h-8 text-blue-600" />
+          <div>
+            <h1 className="text-2xl font-semibold text-gray-800">Open Tickets</h1>
+            <p className="text-gray-500">Manage and view all open tickets</p>
+          </div>
+        </div>
+        <div className="flex space-x-4">
           <select
             value={selectedStatus}
             onChange={(e) => handleStatusFilter(e.target.value)}
-            className="appearance-none bg-white border border-gray-300 rounded-lg px-4 py-2 pr-8 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+            className="px-4 py-2 border border-gray-200 rounded-lg focus:ring-2 focus:ring-blue-200 focus:border-blue-300"
           >
             <option value="ALL">All Status</option>
             <option value="OPEN">Open</option>
             <option value="ASSIGNED">Assigned</option>
             <option value="IN_PROGRESS">In Progress</option>
           </select>
-          <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-700">
-            <svg className="fill-current h-4 w-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20">
-              <path d="M9.293 12.95l.707.707L15.657 8l-1.414-1.414L10 10.828 5.757 6.586 4.343 8z"/>
-            </svg>
-          </div>
         </div>
       </div>
 
