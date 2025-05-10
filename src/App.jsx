@@ -15,6 +15,7 @@ import NotificationsPage from './components/NotificationsPage';
 import EditTicket from './components/EditTicket';
 import HelpDocs from './components/HelpDocs';
 import Feedback from './components/Feedback';
+import AssignedTickets from './components/AssignedTickets';
 
 function App() {
 
@@ -45,6 +46,11 @@ function App() {
           <Route path="/dashboard/open-tickets" element={
             <Layout>
               <OpenTickets />
+            </Layout>
+          } />
+          <Route path="/dashboard/assigned-tickets" element={
+            <Layout>
+              <AssignedTickets />
             </Layout>
           } />
           <Route path="/dashboard/technician" element={

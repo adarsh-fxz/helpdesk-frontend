@@ -1,25 +1,57 @@
 import React from "react";
-import { Home, FileText, Users, Settings, MessageSquare, HelpCircle, LogOut, Bell } from "lucide-react";
+import { Home, FileText, Users, Settings, MessageSquare, HelpCircle, LogOut, Bell, ClipboardList } from "lucide-react";
 import { Link, useNavigate, useLocation } from "react-router-dom";
 import Notification from "./Notification";
 
 const Sidebar = () => {
   const navigate = useNavigate();
   const location = useLocation();
+  const userRole = (localStorage.getItem('role') || '').toLowerCase();
 
   const handleLogout = () => {
     localStorage.removeItem('token');
+    localStorage.removeItem('role');
+    localStorage.removeItem('userId');
     navigate('/Signin');
   };
 
-  const menuItems = [
-    { icon: Home, label: "Dashboard", path: "/dashboard" },
-    { icon: FileText, label: "Create Ticket", path: "/dashboard/create-ticket" },
-    { icon: FileText, label: "My Tickets", path: "/dashboard/my-tickets" },
-    { icon: FileText, label: "Open Tickets", path: "/dashboard/open-tickets" },
-    { icon: Bell, label: "Notifications", path: "/dashboard/notifications", component: Notification },
-    { icon: Users, label: "Users", path: "/dashboard/users" },
-  ];
+  const getMenuItems = () => {
+    const commonItems = [
+      { icon: Home, label: "Dashboard", path: "/dashboard" },
+      { icon: Bell, label: "Notifications", path: "/dashboard/notifications", component: Notification },
+    ];
+
+    const userItems = [
+      { icon: FileText, label: "Create Ticket", path: "/dashboard/create-ticket" },
+      { icon: FileText, label: "My Tickets", path: "/dashboard/my-tickets" },
+    ];
+
+    const technicianItems = [
+      { icon: FileText, label: "Open Tickets", path: "/dashboard/open-tickets" },
+      { icon: ClipboardList, label: "Assigned Tickets", path: "/dashboard/assigned-tickets" },
+    ];
+
+    const adminItems = [
+      { icon: FileText, label: "Create Ticket", path: "/dashboard/create-ticket" },
+      { icon: FileText, label: "My Tickets", path: "/dashboard/my-tickets" },
+      { icon: FileText, label: "Open Tickets", path: "/dashboard/open-tickets" },
+      { icon: Users, label: "Users", path: "/dashboard/users" },
+      { icon: Users, label: "Technicians", path: "/dashboard/technician" },
+    ];
+
+    switch (userRole) {
+      case 'admin':
+        return [...commonItems, ...adminItems];
+      case 'technician':
+        return [...commonItems, ...technicianItems];
+      case 'user':
+        return [...commonItems, ...userItems];
+      default:
+        return commonItems;
+    }
+  };
+
+  const menuItems = getMenuItems();
 
   return (
     <nav className="w-64 bg-white p-6 border-r shadow-md h-screen flex flex-col sticky top-0">
@@ -40,17 +72,6 @@ const Sidebar = () => {
             {item.component && <item.component />}
           </Link>
         ))}
-        <Link
-          to="/dashboard/technician"
-          className={`flex items-center p-3 rounded-lg ${
-            location.pathname === "/dashboard/technician"
-              ? "bg-blue-100 text-blue-700 font-medium border-l-4 border-blue-500"
-              : "text-gray-600 hover:bg-blue-50 hover:text-blue-600"
-          }`}
-        >
-          <Users className="w-5 h-5 mr-3" />
-          Technician
-        </Link>
         <Link
           to="/dashboard/settings"
           className={`flex items-center p-3 rounded-lg ${

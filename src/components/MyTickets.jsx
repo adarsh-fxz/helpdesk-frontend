@@ -7,6 +7,7 @@ const MyTickets = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
   const [selectedTicket, setSelectedTicket] = useState(null);
+  const [copiedPhone, setCopiedPhone] = useState(null);
   const navigate = useNavigate();
 
   const { isLoaded } = useLoadScript({
@@ -122,7 +123,7 @@ const MyTickets = () => {
 
           <div className="p-4 flex flex-col flex-1 overflow-y-auto">
             {/* Title & Description */}
-            <h3 className="text-base font-bold text-gray-900 mb-1 truncate">{ticket.title}</h3>
+            <h3 className="text-base font-bold text-gray-900 mb-1 break-words whitespace-normal">{ticket.title}</h3>
             <p className="text-gray-600 text-sm mb-2 line-clamp-2 min-h-[2.5em]">{ticket.description}</p>
 
             {/* Creator */}
@@ -134,6 +135,31 @@ const MyTickets = () => {
               </div>
               <span className="text-xs text-gray-600 font-medium">{ticket.createdBy?.name || 'Unknown'}</span>
             </div>
+
+            {/* Assigned Technician */}
+            {ticket.assignedTo?.name && (
+              <div className="flex flex-col bg-blue-50 rounded-md px-2 py-1 mb-2">
+                <span className="text-xs text-blue-700 font-semibold">
+                  Assigned to: {ticket.assignedTo.name}
+                </span>
+                {ticket.assignedTo.phone && (
+                  <button
+                    type="button"
+                    className="text-xs text-blue-600 hover:underline text-left focus:outline-none"
+                    onClick={async () => {
+                      await navigator.clipboard.writeText(ticket.assignedTo.phone);
+                      setCopiedPhone(ticket.id);
+                      setTimeout(() => setCopiedPhone(null), 1200);
+                    }}
+                  >
+                    📞 {ticket.assignedTo.phone}
+                    {copiedPhone === ticket.id && (
+                      <span className="ml-2 text-green-600 font-semibold">Copied!</span>
+                    )}
+                  </button>
+                )}
+              </div>
+            )}
 
             {/* Location & Map */}
             {ticket.location && (
