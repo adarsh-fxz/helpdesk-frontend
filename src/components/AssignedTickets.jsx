@@ -146,105 +146,106 @@ const AssignedTickets = () => {
   }
 
   return (
-    <div className={`p-6 min-h-screen ${isDarkMode ? 'bg-gray-900' : 'bg-gray-100'}`}>
-      <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-6">
-        <div className="flex items-center space-x-4 mb-4 md:mb-0">
-          <ClipboardList className="w-8 h-8 text-blue-600" />
-          <div>
-            <h1 className={`text-2xl font-semibold ${isDarkMode ? 'text-gray-100' : 'text-gray-800'}`}>{isAdmin ? 'All Assigned Tickets' : 'My Assigned Tickets'}</h1>
-            <p className={`${isDarkMode ? 'text-gray-400' : 'text-gray-500'}`}>{isAdmin ? 'View and manage all assigned tickets' : 'View and manage tickets assigned to you'}</p>
+    <div className={`p-6 min-h-screen flex justify-center ${isDarkMode ? 'bg-gray-900' : 'bg-gray-100'}`}>
+      <div className="w-full max-w-7xl">
+        <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-10">
+          <div className="flex items-center space-x-4 mb-4 md:mb-0">
+            <ClipboardList className="w-8 h-8 text-blue-600" />
+            <div>
+              <h1 className={`text-2xl font-semibold ${isDarkMode ? 'text-gray-100' : 'text-gray-800'}`}>{isAdmin ? 'All Assigned Tickets' : 'My Assigned Tickets'}</h1>
+              <p className={`${isDarkMode ? 'text-gray-400' : 'text-gray-500'}`}>{isAdmin ? 'View and manage all assigned tickets' : 'View and manage tickets assigned to you'}</p>
+            </div>
           </div>
-        </div>
-        <div className="flex space-x-4">
-          <div className="relative">
-            <Search className={`absolute left-3 top-3 ${isDarkMode ? 'text-gray-500' : 'text-gray-400'}`} />
-            <input
-              type="text"
-              placeholder={isAdmin ? "Search by title, description or technician..." : "Search tickets..."}
-              className={`pl-10 pr-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-200 dark:focus:ring-blue-800 focus:border-blue-300 dark:focus:border-blue-600 transition-colors
-                ${isDarkMode ? 'bg-gray-800 border-gray-700 text-gray-100 placeholder-gray-500' : 'bg-white border-gray-200 text-gray-900 placeholder-gray-400'}`}
-              value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
-            />
-          </div>
-          <select
-            value={selectedStatus}
-            onChange={(e) => handleStatusFilter(e.target.value)}
-            className={`px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-200 dark:focus:ring-blue-800 focus:border-blue-300 dark:focus:border-blue-600 transition-colors
-              ${isDarkMode ? 'bg-gray-800 border-gray-700 text-gray-100' : 'bg-white border-gray-200 text-gray-900'}`}
-          >
-            <option value="ALL">All Status</option>
-            <option value="ASSIGNED">Assigned</option>
-            <option value="IN_PROGRESS">In Progress</option>
-            <option value="CLOSED">Closed</option>
-          </select>
-        </div>
-      </div>
-
-      {error && (
-        <div className={`mb-4 p-4 flex items-start rounded-lg border ${isDarkMode ? 'bg-red-900/40 border-red-700' : 'bg-red-50 border-red-200'}`}>
-          <AlertCircle className="w-5 h-5 text-red-500 mr-2 mt-0.5" />
-          <p className={`${isDarkMode ? 'text-red-300' : 'text-red-600'}`}>{error}</p>
-        </div>
-      )}
-
-      {filteredTickets.length === 0 ? (
-        <div className="text-center py-8">
-          <p className={`${isDarkMode ? 'text-gray-400' : 'text-gray-500'}`}>No assigned tickets found</p>
-        </div>
-      ) : (
-        <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-3 p-4 justify-center">
-          {filteredTickets.map((ticket) => (
-            <div
-              key={ticket.id}
-              className={`rounded-2xl shadow-md hover:shadow-lg transition-shadow duration-300 flex flex-col h-full border relative mx-auto max-w-sm w-full
-                ${isDarkMode ? 'bg-gray-800 border-gray-700' : 'bg-white border-gray-200'}`}
-              style={{ minHeight: 380, maxHeight: 440, marginBottom: 18 }}
+          <div className="flex space-x-4">
+            <div className="relative">
+              <Search className={`absolute left-3 top-3 ${isDarkMode ? 'text-gray-500' : 'text-gray-400'}`} />
+              <input
+                type="text"
+                placeholder={isAdmin ? "Search by title, description or technician..." : "Search tickets..."}
+                className={`pl-10 pr-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-200 dark:focus:ring-blue-800 focus:border-blue-300 dark:focus:border-blue-600 transition-colors
+                  ${isDarkMode ? 'bg-gray-800 border-gray-700 text-gray-100 placeholder-gray-500' : 'bg-white border-gray-200 text-gray-900 placeholder-gray-400'}`}
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+              />
+            </div>
+            <select
+              value={selectedStatus}
+              onChange={(e) => handleStatusFilter(e.target.value)}
+              className={`px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-200 dark:focus:ring-blue-800 focus:border-blue-300 dark:focus:border-blue-600 transition-colors
+                ${isDarkMode ? 'bg-gray-800 border-gray-700 text-gray-100' : 'bg-white border-gray-200 text-gray-900'}`}
             >
-              {/* Status badge at top right */}
-              <span className={`absolute top-3 right-3 px-3 py-0.5 rounded-full text-xs font-bold shadow border uppercase tracking-wide ${getStatusColor(ticket.status)}`} style={{letterSpacing: 1}}>
-                {ticket.status.replace('_', ' ')}
-              </span>
+              <option value="ALL">All Status</option>
+              <option value="ASSIGNED">Assigned</option>
+              <option value="IN_PROGRESS">In Progress</option>
+              <option value="CLOSED">Closed</option>
+            </select>
+          </div>
+        </div>
 
-              {/* Image section */}
-              {ticket.imageUrls && ticket.imageUrls.length > 0 && (
-                <div className={`relative h-32 w-full ${isDarkMode ? 'bg-gray-900' : 'bg-gray-100'}`}>
-                  <img
-                    src={ticket.imageUrls[0]}
-                    alt={ticket.title}
-                    className={`w-full h-full object-cover rounded-t-2xl border-b ${isDarkMode ? 'border-gray-700' : 'border-gray-200'}`}
-                  />
-                </div>
-              )}
+        {error && (
+          <div className={`mb-4 p-4 flex items-start rounded-lg border ${isDarkMode ? 'bg-red-900/40 border-red-700' : 'bg-red-50 border-red-200'}`}> 
+            <AlertCircle className="w-5 h-5 text-red-500 mr-2 mt-0.5" />
+            <p className={`${isDarkMode ? 'text-red-300' : 'text-red-600'}`}>{error}</p>
+          </div>
+        )}
 
-              {/* Content section */}
-              <div className="p-4 flex-grow flex flex-col">
-                <h3 className={`text-lg font-bold mb-1 truncate ${isDarkMode ? 'text-gray-100' : 'text-gray-900'}`}>{ticket.title}</h3>
-                <p className={`mb-2 break-words line-clamp-2 ${isDarkMode ? 'text-gray-300' : 'text-gray-600'}`} style={{minHeight: 32}}>{ticket.description}</p>
+        {filteredTickets.length === 0 ? (
+          <div className="text-center py-16">
+            <p className={`${isDarkMode ? 'text-gray-400' : 'text-gray-500'} text-lg`}>No assigned tickets found</p>
+          </div>
+        ) : (
+          <div className="grid gap-10 md:grid-cols-2 lg:grid-cols-3">
+            {filteredTickets.map((ticket) => (
+              <div
+                key={ticket.id}
+                className={`rounded-3xl shadow-lg hover:shadow-2xl transition-shadow duration-300 flex flex-col h-full border relative mx-auto max-w-md w-full
+                  ${isDarkMode ? 'bg-gray-800 border-gray-700' : 'bg-white border-gray-200'}`}
+                style={{ minHeight: 420, marginBottom: 32 }}
+              >
+                {/* Status badge at top right */}
+                <span className={`absolute top-5 right-5 px-4 py-1 rounded-full text-xs font-bold shadow border uppercase tracking-wide ${getStatusColor(ticket.status)}`} style={{letterSpacing: 1}}>
+                  {ticket.status.replace('_', ' ')}
+                </span>
 
-                {/* Location section */}
-                {ticket.latitude && ticket.longitude && isLoaded ? (
-                  <div className={`h-24 mb-3 rounded-lg overflow-hidden border ${isDarkMode ? 'border-gray-700' : 'border-gray-200'}`}>
-                    <GoogleMap
-                      mapContainerStyle={{ width: '100%', height: '100%' }}
-                      center={{ lat: ticket.latitude, lng: ticket.longitude }}
-                      zoom={15}
-                    >
-                      <Marker position={{ lat: ticket.latitude, lng: ticket.longitude }} />
-                    </GoogleMap>
-                  </div>
-                ) : (ticket.latitude && ticket.longitude &&
-                  <div className={`h-24 mb-3 flex items-center justify-center rounded-lg border text-xs ${isDarkMode ? 'bg-gray-900 border-gray-700 text-gray-500' : 'bg-gray-100 border-gray-200 text-gray-400'}`}>
-                    Map unavailable
+                {/* Image section */}
+                {ticket.imageUrls && ticket.imageUrls.length > 0 && (
+                  <div className="relative h-40 w-full rounded-t-3xl overflow-hidden">
+                    <img
+                      src={ticket.imageUrls[0]}
+                      alt={ticket.title}
+                      className="w-full h-full object-cover"
+                    />
                   </div>
                 )}
 
-                {/* Ticket details */}
-                <div className="space-y-1 mb-2">
-                  <div className="flex flex-col">
-                    <span className={`text-xs font-medium ${isDarkMode ? 'text-gray-400' : 'text-gray-500'}`}>
-                      Created by: <span className={`${isDarkMode ? 'text-gray-200' : 'text-gray-700'} font-semibold`}>{ticket.createdBy?.name || 'Unknown'}</span>
-                    </span>
+                {/* Content section */}
+                <div className="p-6 flex-grow flex flex-col">
+                  <h3 className={`text-xl font-bold mb-2 ${isDarkMode ? 'text-gray-100' : 'text-gray-900'}`}>{ticket.title}</h3>
+                  <p className={`mb-4 text-base line-clamp-2 ${isDarkMode ? 'text-gray-300' : 'text-gray-600'}`}>{ticket.description}</p>
+
+                  {/* Location section */}
+                  {ticket.latitude && ticket.longitude && isLoaded ? (
+                    <div className="h-28 mb-4 rounded-xl overflow-hidden border shadow-sm">
+                      <GoogleMap
+                        mapContainerStyle={{ width: '100%', height: '100%' }}
+                        center={{ lat: ticket.latitude, lng: ticket.longitude }}
+                        zoom={15}
+                      >
+                        <Marker position={{ lat: ticket.latitude, lng: ticket.longitude }} />
+                      </GoogleMap>
+                    </div>
+                  ) : (ticket.latitude && ticket.longitude &&
+                    <div className="h-28 mb-4 flex items-center justify-center rounded-xl border text-xs">
+                      <span className="text-gray-400">Map unavailable</span>
+                    </div>
+                  )}
+
+                  {/* Ticket details */}
+                  <div className="space-y-2 mb-4">
+                    <div className="flex items-center gap-2 text-sm">
+                      <span className="font-medium text-gray-500">Created by:</span>
+                      <span className="font-semibold">{ticket.createdBy?.name || 'Unknown'}</span>
+                    </div>
                     {ticket.createdBy?.phone && (
                       <button
                         type="button"
@@ -262,73 +263,73 @@ const AssignedTickets = () => {
                         )}
                       </button>
                     )}
-                  </div>
-                  {isAdmin && (
-                    <div className={`flex flex-col space-y-1 p-1 rounded-md ${isDarkMode ? 'bg-blue-950' : 'bg-blue-50'}`}>
-                      <div className="flex items-center">
-                        <User className="w-4 h-4 mr-2 text-blue-600" />
-                        <span className={`font-medium text-xs ${isDarkMode ? 'text-blue-200' : 'text-blue-700'}`}>
-                          Assigned to: {ticket.assignedTo?.name || 'Unassigned'}
-                        </span>
+                    {isAdmin && (
+                      <div className={`flex flex-col space-y-1 p-2 rounded-md ${isDarkMode ? 'bg-blue-950' : 'bg-blue-50'}`}>
+                        <div className="flex items-center">
+                          <User className="w-4 h-4 mr-2 text-blue-600" />
+                          <span className={`font-medium text-xs ${isDarkMode ? 'text-blue-200' : 'text-blue-700'}`}>
+                            Assigned to: {ticket.assignedTo?.name || 'Unassigned'}
+                          </span>
+                        </div>
+                        {ticket.assignedTo?.phone && (
+                          <button
+                            type="button"
+                            className={`text-xs ml-6 text-left focus:outline-none hover:underline transition-colors cursor-pointer
+                              ${isDarkMode ? 'text-blue-300 hover:text-blue-400' : 'text-blue-600 hover:text-blue-700'}`}
+                            onClick={async () => {
+                              await navigator.clipboard.writeText(ticket.assignedTo.phone);
+                              setCopiedPhone(ticket.id);
+                              setTimeout(() => setCopiedPhone(null), 1200);
+                            }}
+                          >
+                            Phone: {ticket.assignedTo.phone}
+                            {copiedPhone === ticket.id && (
+                              <span className={`ml-2 font-semibold ${isDarkMode ? 'text-green-300' : 'text-green-600'}`}>Copied!</span>
+                            )}
+                          </button>
+                        )}
                       </div>
-                      {ticket.assignedTo?.phone && (
+                    )}
+                    <div className="flex items-center gap-2 text-sm">
+                      <span className="font-medium text-gray-500">Location:</span>
+                      <span>{ticket.location || 'Not specified'}</span>
+                    </div>
+                    <div className="flex items-center gap-2 text-sm">
+                      <span className="font-medium text-gray-500">Created:</span>
+                      <span>{new Date(ticket.createdAt).toLocaleDateString()}</span>
+                    </div>
+                  </div>
+
+                  {/* Action buttons */}
+                  <div className="flex flex-col sm:flex-row justify-between items-center mt-auto pt-4 border-t gap-3">
+                    <div className="flex space-x-2 mb-2 sm:mb-0">
+                      {!isAdmin && (
                         <button
-                          type="button"
-                          className={`text-xs ml-6 text-left focus:outline-none hover:underline transition-colors cursor-pointer
-                            ${isDarkMode ? 'text-blue-300 hover:text-blue-400' : 'text-blue-600 hover:text-blue-700'}`}
-                          onClick={async () => {
-                            await navigator.clipboard.writeText(ticket.assignedTo.phone);
-                            setCopiedPhone(ticket.id);
-                            setTimeout(() => setCopiedPhone(null), 1200);
-                          }}
+                          onClick={() => handleUnassign(ticket.id)}
+                          className={`px-4 py-1.5 rounded-lg text-sm font-semibold border transition-colors duration-150 cursor-pointer
+                            ${isDarkMode ? 'text-red-300 border-red-700 hover:bg-red-700 hover:text-white' : 'text-red-600 border-red-600 hover:bg-red-600 hover:text-white'}`}
                         >
-                          Phone: {ticket.assignedTo.phone}
-                          {copiedPhone === ticket.id && (
-                            <span className={`ml-2 font-semibold ${isDarkMode ? 'text-green-300' : 'text-green-600'}`}>Copied!</span>
-                          )}
+                          Unassign
                         </button>
                       )}
                     </div>
-                  )}
-                  <div className="flex flex-wrap gap-x-2 gap-y-1">
-                    <span className={`text-xs ${isDarkMode ? 'text-gray-400' : 'text-gray-500'}`}>
-                      <span className="font-medium">Location:</span> {ticket.location || 'Not specified'}
-                    </span>
-                    <span className={`text-xs ${isDarkMode ? 'text-gray-400' : 'text-gray-500'}`}>
-                      <span className="font-medium">Created:</span> {new Date(ticket.createdAt).toLocaleDateString()}
-                    </span>
+                    <select
+                      value={ticket.status}
+                      onChange={(e) => handleStatusUpdate(ticket.id, e.target.value)}
+                      className={`text-sm border rounded-lg px-3 py-1.5 focus:outline-none focus:ring-2 font-medium transition-colors
+                        ${isDarkMode ? 'border-gray-700 bg-gray-800 text-gray-100 focus:ring-blue-800' : 'border-gray-300 bg-white text-gray-900 focus:ring-blue-200'}`}
+                    >
+                      <option value="ASSIGNED">Assigned</option>
+                      <option value="IN_PROGRESS">In Progress</option>
+                      <option value="CLOSED">Closed</option>
+                    </select>
                   </div>
-                </div>
-
-                {/* Action buttons */}
-                <div className={`flex flex-col sm:flex-row justify-between items-center mt-auto pt-3 border-t gap-2 ${isDarkMode ? 'border-gray-700' : 'border-gray-200'}`}>
-                  <div className="flex space-x-2 mb-2 sm:mb-0">
-                    {!isAdmin && (
-                      <button
-                        onClick={() => handleUnassign(ticket.id)}
-                        className={`px-3 py-0.5 rounded-md text-xs font-semibold border transition-colors duration-150 cursor-pointer
-                          ${isDarkMode ? 'text-red-300 border-red-700 hover:bg-red-700 hover:text-white' : 'text-red-600 border-red-600 hover:bg-red-600 hover:text-white'}`}
-                      >
-                        Unassign
-                      </button>
-                    )}
-                  </div>
-                  <select
-                    value={ticket.status}
-                    onChange={(e) => handleStatusUpdate(ticket.id, e.target.value)}
-                    className={`text-xs border rounded px-2 py-0.5 focus:outline-none focus:ring-2 font-medium transition-colors
-                      ${isDarkMode ? 'border-gray-700 bg-gray-800 text-gray-100 focus:ring-blue-800' : 'border-gray-300 bg-white text-gray-900 focus:ring-blue-200'}`}
-                  >
-                    <option value="ASSIGNED">Assigned</option>
-                    <option value="IN_PROGRESS">In Progress</option>
-                    <option value="CLOSED">Closed</option>
-                  </select>
                 </div>
               </div>
-            </div>
-          ))}
-        </div>
-      )}
+            ))}
+          </div>
+        )}
+      </div>
     </div>
   );
 };
