@@ -16,11 +16,12 @@ import EditTicket from './components/EditTicket';
 import HelpDocs from './components/HelpDocs';
 import Feedback from './components/Feedback';
 import AssignedTickets from './components/AssignedTickets';
+import { ThemeProvider } from './context/ThemeContext';
 
 function App() {
 
   return (
-    <>
+    <ThemeProvider>
       <BrowserRouter>
         <Routes>
           <Route path="/" element={<HomePage />} />
@@ -85,7 +86,7 @@ function App() {
           } />
         </Routes>
       </BrowserRouter>
-    </>
+    </ThemeProvider>
   )
 }
 

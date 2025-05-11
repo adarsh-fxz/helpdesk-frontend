@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import { GoogleMap, useLoadScript, Marker } from '@react-google-maps/api';
+import { useTheme } from '../context/ThemeContext';
 
 const CreateTicket = () => {
   const [title, setTitle] = useState('');
@@ -14,6 +15,7 @@ const CreateTicket = () => {
   const [mapCenter, setMapCenter] = useState({ lat: 0, lng: 0 });
   const [showMap, setShowMap] = useState(false);
   const [mapError, setMapError] = useState('');
+  const { isDarkMode } = useTheme();
 
   const { isLoaded, loadError } = useLoadScript({
     googleMapsApiKey: import.meta.env.VITE_GOOGLE_MAPS_API_KEY,
@@ -145,11 +147,15 @@ const CreateTicket = () => {
   };
 
   return (
-    <div className="bg-white rounded-lg shadow p-6">
+    <div className={`p-6 min-h-screen ${isDarkMode ? 'bg-gray-800' : ''}`}>
       <h2 className="text-2xl font-bold mb-6">Create New Ticket</h2>
 
       {error && (
-        <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-4">
+        <div className={`border px-4 py-3 rounded mb-4 ${
+          isDarkMode
+            ? 'bg-red-900/40 border-red-700 text-red-300'
+            : 'bg-red-100 border-red-400 text-red-700'
+        }`}>
           {error}
         </div>
       )}
@@ -162,7 +168,7 @@ const CreateTicket = () => {
 
       <form onSubmit={handleSubmit} className="space-y-6">
         <div>
-          <label htmlFor="title" className="block text-sm font-medium text-gray-700">
+          <label htmlFor="title" className={`block text-sm font-medium ${isDarkMode ? 'text-gray-200' : 'text-gray-700'}`}>
             Title
           </label>
           <input
@@ -170,14 +176,18 @@ const CreateTicket = () => {
             id="title"
             value={title}
             onChange={(e) => setTitle(e.target.value)}
-            className="mt-1 block w-full px-4 py-2 rounded-md border border-gray-300 shadow-sm focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition-colors"
+            className={`mt-1 block w-full px-4 py-2 rounded-md border shadow-sm transition-colors
+              ${isDarkMode
+                ? 'bg-gray-900 border-gray-700 text-gray-100 placeholder-gray-400 focus:border-blue-500 focus:ring-blue-900'
+                : 'bg-white border-gray-300 text-gray-900 placeholder-gray-400 focus:border-blue-500 focus:ring-blue-200'
+              }`}
             required
             placeholder="Enter ticket title"
           />
         </div>
 
         <div>
-          <label htmlFor="description" className="block text-sm font-medium text-gray-700">
+          <label htmlFor="description" className={`block text-sm font-medium ${isDarkMode ? 'text-gray-200' : 'text-gray-700'}`}>
             Description
           </label>
           <textarea
@@ -185,14 +195,18 @@ const CreateTicket = () => {
             value={description}
             onChange={(e) => setDescription(e.target.value)}
             rows={4}
-            className="mt-1 block w-full px-4 py-2 rounded-md border border-gray-300 shadow-sm focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition-colors"
+            className={`mt-1 block w-full px-4 py-2 rounded-md border shadow-sm transition-colors
+              ${isDarkMode
+                ? 'bg-gray-900 border-gray-700 text-gray-100 placeholder-gray-400 focus:border-blue-500 focus:ring-blue-900'
+                : 'bg-white border-gray-300 text-gray-900 placeholder-gray-400 focus:border-blue-500 focus:ring-blue-200'
+              }`}
             required
             placeholder="Describe your issue in detail"
           />
         </div>
 
         <div>
-          <label htmlFor="location" className="block text-sm font-medium text-gray-700">
+          <label htmlFor="location" className={`block text-sm font-medium ${isDarkMode ? 'text-gray-200' : 'text-gray-700'}`}>
             Location
           </label>
           <div className="mt-1 flex space-x-2">
@@ -201,15 +215,23 @@ const CreateTicket = () => {
               id="location"
               value={location}
               onChange={(e) => setLocation(e.target.value)}
-              className="flex-1 px-4 py-2 rounded-md border border-gray-300 shadow-sm focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition-colors"
+              className={`flex-1 px-4 py-2 rounded-md border shadow-sm transition-colors
+                ${isDarkMode
+                  ? 'bg-gray-900 border-gray-700 text-gray-100 placeholder-gray-400 focus:border-blue-500 focus:ring-blue-900'
+                  : 'bg-white border-gray-300 text-gray-900 placeholder-gray-400 focus:border-blue-500 focus:ring-blue-200'
+                }`}
               placeholder="Eg: nearby Herald College Kathmandu"
             />
             <button
               type="button"
               onClick={() => setShowMap(!showMap)}
-              className="px-4 py-2 bg-gray-100 text-gray-700 rounded-md hover:bg-gray-200 focus:outline-none focus:ring-2 focus:ring-gray-200"
+              className={`px-4 py-2 rounded-md focus:outline-none focus:ring-2 transition-colors
+                ${isDarkMode
+                  ? 'bg-gray-700 text-gray-200 hover:bg-gray-600 border border-gray-600'
+                  : 'bg-gray-100 text-gray-700 hover:bg-gray-200 border border-gray-200'
+                }`}
             >
-              {showMap ? 'Hide Map' : 'Show Map'}
+              {showMap ? 'Hide Map' : 'Choose on Map'}
             </button>
           </div>
         </div>
@@ -226,7 +248,7 @@ const CreateTicket = () => {
         )}
 
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-2">
+          <label className={`block text-sm font-medium ${isDarkMode ? 'text-gray-200' : 'text-gray-700'} mb-2`}>
             Image URLs
           </label>
           {imageUrls.map((url, index) => (
@@ -236,13 +258,18 @@ const CreateTicket = () => {
                 value={url}
                 onChange={(e) => handleImageUrlChange(index, e.target.value)}
                 placeholder="Enter image URL"
-                className="flex-1 px-4 py-2 rounded-md border border-gray-300 shadow-sm focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition-colors"
+                className={`flex-1 px-4 py-2 rounded-md border shadow-sm transition-colors
+                  ${isDarkMode
+                    ? 'bg-gray-900 border-gray-700 text-gray-100 placeholder-gray-400 focus:border-blue-500 focus:ring-blue-900'
+                    : 'bg-white border-gray-300 text-gray-900 placeholder-gray-400 focus:border-blue-500 focus:ring-blue-200'
+                  }`}
               />
               {index > 0 && (
                 <button
                   type="button"
                   onClick={() => removeImageUrlField(index)}
-                  className="px-4 py-2 text-red-600 hover:text-red-700 hover:bg-red-50 rounded-md transition-colors"
+                  className={`px-4 py-2 text-red-600 hover:text-red-700 hover:bg-red-50 rounded-md transition-colors
+                    ${isDarkMode ? 'bg-gray-800 text-gray-200 hover:bg-gray-700' : 'bg-gray-100 text-gray-700 hover:bg-gray-200'}`}
                 >
                   Remove
                 </button>
@@ -252,7 +279,8 @@ const CreateTicket = () => {
           <button
             type="button"
             onClick={addImageUrlField}
-            className="mt-2 px-4 py-2 text-sm text-blue-600 hover:text-blue-700 hover:bg-blue-50 rounded-md transition-colors"
+            className={`mt-2 px-4 py-2 text-sm text-blue-600 hover:text-blue-700 hover:bg-blue-50 rounded-md transition-colors
+              ${isDarkMode ? 'bg-gray-800 text-gray-200 hover:bg-gray-700' : 'bg-gray-100 text-gray-700 hover:bg-gray-200'}`}
           >
             + Add another image URL
           </button>

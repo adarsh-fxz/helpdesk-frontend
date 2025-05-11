@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import { motion } from "framer-motion";
 import { useNavigate } from "react-router-dom";
 import {
@@ -19,33 +19,12 @@ import {
 import Button from "../components/Button";
 import NavLink from "../components/NavLink";
 import MotionCard from "../components/MotionCard";
+import { useTheme } from "../context/ThemeContext";
 
 const HomePage = () => {
   const navigate = useNavigate();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
-  const [isDarkMode, setIsDarkMode] = useState(() => {
-    const savedTheme = localStorage.getItem("theme");
-    return savedTheme === "dark" || (!savedTheme && window.matchMedia("(prefers-color-scheme: dark)").matches);
-  });
-
-  useEffect(() => {
-    if (isDarkMode) {
-      document.body.classList.remove("light-theme");
-      document.body.classList.add("dark-theme");
-      localStorage.setItem("theme", "dark");
-    } else {
-      document.body.classList.remove("dark-theme");
-      document.body.classList.add("light-theme");
-      localStorage.setItem("theme", "light");
-    }
-  }, [isDarkMode]);
-
-  const toggleTheme = () => {
-    setIsDarkMode((prev) => {
-      const newMode = !prev;
-      return newMode;
-    });
-  };
+  const { isDarkMode, toggleTheme } = useTheme();
 
   const handleSignIn = () => {
     navigate('/signin');
