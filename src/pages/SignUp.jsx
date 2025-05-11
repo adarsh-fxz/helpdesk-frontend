@@ -1,6 +1,8 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
+import { FcGoogle } from 'react-icons/fc'; // Google icon
+import { FaGithub } from 'react-icons/fa'; // GitHub icon
 
 const Signup = () => {
   const navigate = useNavigate();
@@ -120,13 +122,23 @@ const Signup = () => {
             </div>
 
             <div className="mt-6 grid grid-cols-2 gap-3">
-              <button className="flex items-center justify-center py-2 px-4 border border-gray-300 rounded-md hover:bg-gray-50">
-                Google
+              <button 
+                onClick={() => navigate('/GoogleLogin')}
+                className="flex items-center justify-center py-2 px-4 border border-gray-300 rounded-md hover:bg-gray-50 w-full"
+              >
+                <FcGoogle className="mr-2 text-lg" />
+                <span className="text-sm font-medium text-gray-700">Sign up with Google</span>
               </button>
-              <button className="flex items-center justify-center py-2 px-4 border border-gray-300 rounded-md hover:bg-gray-50">
-                GitHub
+
+              <button 
+                onClick={() => navigate('/GitHubLogin')}
+                className="flex items-center justify-center py-2 px-4 border border-gray-300 rounded-md hover:bg-gray-50 w-full"
+              >
+                <FaGithub className="mr-2 text-gray-800 text-lg" />
+                <span className="text-sm font-medium text-gray-700">Sign up with GitHub</span>
               </button>
             </div>
+
           </div>
 
           <p className="mt-4 text-center text-sm text-gray-600">
