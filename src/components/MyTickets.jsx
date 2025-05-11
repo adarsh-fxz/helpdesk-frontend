@@ -1,8 +1,9 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { GoogleMap, useLoadScript, Marker } from '@react-google-maps/api';
-import { ClipboardList, Search } from 'lucide-react';
+import { ClipboardList, Search, MessageSquare } from 'lucide-react';
 import { useTheme } from '../context/ThemeContext';
+import Chat from './Chat';
 
 const MyTickets = () => {
   const [tickets, setTickets] = useState([]);
@@ -10,6 +11,7 @@ const MyTickets = () => {
   const [error, setError] = useState('');
   const [selectedTicket, setSelectedTicket] = useState(null);
   const [copiedPhone, setCopiedPhone] = useState(null);
+  const [selectedTicketForChat, setSelectedTicketForChat] = useState(null);
   const navigate = useNavigate();
   const { isDarkMode } = useTheme();
 
@@ -152,26 +154,35 @@ const MyTickets = () => {
 
               {/* Assigned Technician */}
               {ticket.assignedTo?.name && (
-                <div className={`flex flex-col rounded-md px-2 py-1 mb-2 ${isDarkMode ? 'bg-blue-950' : 'bg-blue-50'}`}>
-                  <span className={`text-xs font-semibold ${isDarkMode ? 'text-blue-200' : 'text-blue-700'}`}>
-                    Assigned to: {ticket.assignedTo.name}
-                  </span>
-                  {ticket.assignedTo.phone && (
-                    <button
-                      type="button"
-                      className={`text-xs text-left focus:outline-none hover:underline ${isDarkMode ? 'text-blue-300' : 'text-blue-600'}`}
-                      onClick={async () => {
-                        await navigator.clipboard.writeText(ticket.assignedTo.phone);
-                        setCopiedPhone(ticket.id);
-                        setTimeout(() => setCopiedPhone(null), 1200);
-                      }}
-                    >
-                      📞 {ticket.assignedTo.phone}
-                      {copiedPhone === ticket.id && (
-                        <span className={`ml-2 font-semibold ${isDarkMode ? 'text-green-300' : 'text-green-600'}`}>Copied!</span>
-                      )}
-                    </button>
-                  )}
+                <div className={`flex items-center justify-between rounded-md px-2 py-1 mb-2 ${isDarkMode ? 'bg-blue-950' : 'bg-blue-50'}`}>
+                  <div className="flex flex-col">
+                    <span className={`text-xs font-semibold ${isDarkMode ? 'text-blue-200' : 'text-blue-700'}`}>
+                      Assigned to: {ticket.assignedTo.name}
+                    </span>
+                    {ticket.assignedTo.phone && (
+                      <button
+                        type="button"
+                        className={`text-xs text-left focus:outline-none hover:underline ${isDarkMode ? 'text-blue-300' : 'text-blue-600'} cursor-pointer`}
+                        onClick={async () => {
+                          await navigator.clipboard.writeText(ticket.assignedTo.phone);
+                          setCopiedPhone(ticket.id);
+                          setTimeout(() => setCopiedPhone(null), 1200);
+                        }}
+                      >
+                        📞 {ticket.assignedTo.phone}
+                        {copiedPhone === ticket.id && (
+                          <span className={`ml-2 font-semibold ${isDarkMode ? 'text-green-300' : 'text-green-600'}`}>Copied!</span>
+                        )}
+                      </button>
+                    )}
+                  </div>
+                  <button
+                    onClick={() => setSelectedTicketForChat(ticket)}
+                    className={`ml-2 p-2 rounded-full transition-colors duration-200 cursor-pointer ${isDarkMode ? 'text-blue-300 hover:text-blue-400 bg-blue-900' : 'text-blue-600 hover:text-blue-700 bg-blue-100'}`}
+                    title="Chat with technician"
+                  >
+                    <MessageSquare className="w-5 h-5" />
+                  </button>
                 </div>
               )}
 
@@ -228,7 +239,7 @@ const MyTickets = () => {
                 <div className="flex space-x-1">
                   <button
                     onClick={() => navigate(`/dashboard/ticket/${ticket.id}/edit`)}
-                    className={`p-1 transition-colors duration-200 ${isDarkMode ? 'text-gray-400 hover:text-blue-400' : 'text-gray-400 hover:text-blue-500'}`}
+                    className={`p-1 transition-colors duration-200 ${isDarkMode ? 'text-gray-400 hover:text-blue-400' : 'text-gray-400 hover:text-blue-500'} cursor-pointer`}
                     title="Edit ticket"
                   >
                     <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -237,7 +248,7 @@ const MyTickets = () => {
                   </button>
                   <button
                     onClick={() => handleDelete(ticket.id)}
-                    className={`p-1 transition-colors duration-200 ${isDarkMode ? 'text-gray-400 hover:text-red-400' : 'text-gray-400 hover:text-red-500'}`}
+                    className={`p-1 transition-colors duration-200 ${isDarkMode ? 'text-gray-400 hover:text-red-400' : 'text-gray-400 hover:text-red-500'} cursor-pointer`}
                     title="Delete ticket"
                   >
                     <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -250,6 +261,14 @@ const MyTickets = () => {
           </div>
         ))}
       </div>
+
+      {/* Chat Modal */}
+      {selectedTicketForChat && (
+        <Chat
+          ticketId={selectedTicketForChat.id}
+          onClose={() => setSelectedTicketForChat(null)}
+        />
+      )}
     </div>
   );
 };

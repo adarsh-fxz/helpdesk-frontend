@@ -1,8 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { ClipboardList, Search, AlertCircle, User } from 'lucide-react';
+import { ClipboardList, Search, AlertCircle, User, MessageSquare } from 'lucide-react';
 import { GoogleMap, useLoadScript, Marker } from '@react-google-maps/api';
 import { useTheme } from '../context/ThemeContext';
+import Chat from './Chat';
 
 const AssignedTickets = () => {
   const [tickets, setTickets] = useState([]);
@@ -11,6 +12,7 @@ const AssignedTickets = () => {
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedStatus, setSelectedStatus] = useState('ALL');
   const [copiedPhone, setCopiedPhone] = useState(null);
+  const [selectedTicketForChat, setSelectedTicketForChat] = useState(null);
   const navigate = useNavigate();
   const userRole = (localStorage.getItem('role') || '').toLowerCase();
   const isAdmin = userRole === 'admin';
@@ -242,52 +244,90 @@ const AssignedTickets = () => {
 
                   {/* Ticket details */}
                   <div className="space-y-2 mb-4">
-                    <div className="flex items-center gap-2 text-sm">
-                      <span className="font-medium text-gray-500">Created by:</span>
-                      <span className="font-semibold">{ticket.createdBy?.name || 'Unknown'}</span>
-                    </div>
-                    {ticket.createdBy?.phone && (
-                      <button
-                        type="button"
-                        className={`text-xs ml-1 font-medium text-left focus:outline-none hover:underline transition-colors cursor-pointer
-                          ${isDarkMode ? 'text-blue-300 hover:text-blue-400' : 'text-blue-600 hover:text-blue-700'}`}
-                        onClick={async () => {
-                          await navigator.clipboard.writeText(ticket.createdBy.phone);
-                          setCopiedPhone(ticket.id + '-creator');
-                          setTimeout(() => setCopiedPhone(null), 1200);
-                        }}
-                      >
-                        📞 {ticket.createdBy.phone}
-                        {copiedPhone === ticket.id + '-creator' && (
-                          <span className={`ml-2 font-semibold ${isDarkMode ? 'text-green-300' : 'text-green-600'}`}>Copied!</span>
-                        )}
-                      </button>
-                    )}
-                    {isAdmin && (
-                      <div className={`flex flex-col space-y-1 p-2 rounded-md ${isDarkMode ? 'bg-blue-950' : 'bg-blue-50'}`}>
-                        <div className="flex items-center">
-                          <User className="w-4 h-4 mr-2 text-blue-600" />
-                          <span className={`font-medium text-xs ${isDarkMode ? 'text-blue-200' : 'text-blue-700'}`}>
-                            Assigned to: {ticket.assignedTo?.name || 'Unassigned'}
-                          </span>
-                        </div>
-                        {ticket.assignedTo?.phone && (
-                          <button
-                            type="button"
-                            className={`text-xs ml-6 text-left focus:outline-none hover:underline transition-colors cursor-pointer
-                              ${isDarkMode ? 'text-blue-300 hover:text-blue-400' : 'text-blue-600 hover:text-blue-700'}`}
-                            onClick={async () => {
-                              await navigator.clipboard.writeText(ticket.assignedTo.phone);
-                              setCopiedPhone(ticket.id);
-                              setTimeout(() => setCopiedPhone(null), 1200);
-                            }}
-                          >
-                            Phone: {ticket.assignedTo.phone}
-                            {copiedPhone === ticket.id && (
-                              <span className={`ml-2 font-semibold ${isDarkMode ? 'text-green-300' : 'text-green-600'}`}>Copied!</span>
+                    {/* Non-admin: Avatar, name, phone stacked, chat button right-aligned */}
+                    {!isAdmin && (
+                      <div className="flex items-center justify-between text-sm">
+                        <div className="flex items-center gap-3">
+                          <div className={`w-8 h-8 rounded-full flex items-center justify-center ${isDarkMode ? 'bg-blue-900' : 'bg-blue-200'}`}> 
+                            <span className={`text-base font-medium ${isDarkMode ? 'text-blue-300' : 'text-blue-700'}`}> 
+                              {ticket.createdBy?.name?.charAt(0)?.toUpperCase() || '?'}
+                            </span>
+                          </div>
+                          <div className="flex flex-col">
+                            <span className="font-semibold text-base">{ticket.createdBy?.name || 'Unknown'}</span>
+                            {ticket.createdBy?.phone && (
+                              <span className={`flex items-center gap-1 text-xs mt-0.5 ${isDarkMode ? 'text-blue-200' : 'text-blue-600'}`}>
+                                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M3 5a2 2 0 012-2h2.28a2 2 0 011.789 1.106l1.387 2.773a2 2 0 01-.327 2.327l-.94.94a16.001 16.001 0 006.586 6.586l.94-.94a2 2 0 012.327-.327l2.773 1.387A2 2 0 0121 18.72V21a2 2 0 01-2 2h-1C9.163 23 1 14.837 1 5V4a2 2 0 012-2z" /></svg>
+                                <button
+                                  type="button"
+                                  className={`focus:outline-none hover:underline transition-colors cursor-pointer`
+                                    + (isDarkMode ? ' text-blue-200 hover:text-blue-400' : ' text-blue-600 hover:text-blue-800')}
+                                  onClick={async () => {
+                                    await navigator.clipboard.writeText(ticket.createdBy.phone);
+                                    setCopiedPhone(ticket.id + '-creator');
+                                    setTimeout(() => setCopiedPhone(null), 1200);
+                                  }}
+                                >
+                                  {ticket.createdBy.phone}
+                                  {copiedPhone === ticket.id + '-creator' && (
+                                    <span className={`ml-2 font-semibold ${isDarkMode ? 'text-green-300' : 'text-green-600'}`}>Copied!</span>
+                                  )}
+                                </button>
+                              </span>
                             )}
-                          </button>
-                        )}
+                          </div>
+                        </div>
+                        <button
+                          onClick={() => setSelectedTicketForChat(ticket)}
+                          className={`ml-2 p-2 rounded-full transition-colors duration-200 cursor-pointer border border-blue-600 flex items-center justify-center
+                            ${isDarkMode ? 'text-blue-300 hover:text-blue-400 bg-blue-900' : 'text-blue-600 hover:text-blue-700 bg-blue-100'}`}
+                          title="Chat"
+                        >
+                          <MessageSquare className="w-5 h-5" />
+                        </button>
+                      </div>
+                    )}
+                    {/* Admin: Avatar, name, phone stacked, chat button right-aligned */}
+                    {isAdmin && (
+                      <div className={`flex items-center justify-between p-2 rounded-md ${isDarkMode ? 'bg-blue-950' : 'bg-blue-50'}`}> 
+                        <div className="flex items-center gap-3">
+                          <div className={`w-8 h-8 rounded-full flex items-center justify-center ${isDarkMode ? 'bg-blue-900' : 'bg-blue-200'}`}> 
+                            <span className={`text-base font-medium ${isDarkMode ? 'text-blue-300' : 'text-blue-700'}`}> 
+                              {ticket.assignedTo?.name?.charAt(0)?.toUpperCase() || '?'}
+                            </span>
+                          </div>
+                          <div className="flex flex-col">
+                            <span className="font-semibold text-base">{ticket.assignedTo?.name || 'Unassigned'}</span>
+                            {ticket.assignedTo?.phone && (
+                              <span className={`flex items-center gap-1 text-xs mt-0.5 ${isDarkMode ? 'text-blue-200' : 'text-blue-600'}`}>
+                                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M3 5a2 2 0 012-2h2.28a2 2 0 011.789 1.106l1.387 2.773a2 2 0 01-.327 2.327l-.94.94a16.001 16.001 0 006.586 6.586l.94-.94a2 2 0 012.327-.327l2.773 1.387A2 2 0 0121 18.72V21a2 2 0 01-2 2h-1C9.163 23 1 14.837 1 5V4a2 2 0 012-2z" /></svg>
+                                <button
+                                  type="button"
+                                  className={`focus:outline-none hover:underline transition-colors cursor-pointer`
+                                    + (isDarkMode ? ' text-blue-200 hover:text-blue-400' : ' text-blue-600 hover:text-blue-800')}
+                                  onClick={async () => {
+                                    await navigator.clipboard.writeText(ticket.assignedTo.phone);
+                                    setCopiedPhone(ticket.id);
+                                    setTimeout(() => setCopiedPhone(null), 1200);
+                                  }}
+                                >
+                                  {ticket.assignedTo.phone}
+                                  {copiedPhone === ticket.id && (
+                                    <span className={`ml-2 font-semibold ${isDarkMode ? 'text-green-300' : 'text-green-600'}`}>Copied!</span>
+                                  )}
+                                </button>
+                              </span>
+                            )}
+                          </div>
+                        </div>
+                        <button
+                          onClick={() => setSelectedTicketForChat(ticket)}
+                          className={`ml-2 p-2 rounded-full transition-colors duration-200 cursor-pointer border border-blue-600 flex items-center justify-center
+                            ${isDarkMode ? 'text-blue-300 hover:text-blue-400 bg-blue-900' : 'text-blue-600 hover:text-blue-700 bg-blue-100'}`}
+                          title="Chat"
+                        >
+                          <MessageSquare className="w-5 h-5" />
+                        </button>
                       </div>
                     )}
                     <div className="flex items-center gap-2 text-sm">
@@ -330,6 +370,14 @@ const AssignedTickets = () => {
           </div>
         )}
       </div>
+
+      {/* Chat Modal */}
+      {selectedTicketForChat && (
+        <Chat
+          ticketId={selectedTicketForChat.id}
+          onClose={() => setSelectedTicketForChat(null)}
+        />
+      )}
     </div>
   );
 };
