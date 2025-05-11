@@ -38,7 +38,6 @@ function App() {
           <Route path="/signup" element={<SignUp />} />
           <Route path="/GoogleLogin" element={<GoogleAuthWrapper/>}/>
           <Route path="/GithubLogin" element={<GitHubLogin/>}/>
-          
           <Route path="/my-profile" element={<MyProfile />} />
           <Route path="/dashboard" element={<Dashboard />} />
           <Route path="/dashboard/settings" element={

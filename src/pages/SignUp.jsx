@@ -3,9 +3,11 @@ import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import { FcGoogle } from 'react-icons/fc'; // Google icon
 import { FaGithub } from 'react-icons/fa'; // GitHub icon
+import { useTheme } from '../context/ThemeContext'; // Adjust the path to where ThemeContext is
 
 const Signup = () => {
   const navigate = useNavigate();
+  const { isDarkMode, toggleTheme } = useTheme();
   const [formData, setFormData] = useState({ name: '', email: '', password: '' });
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
@@ -32,8 +34,8 @@ const Signup = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gray-100 flex items-center justify-center p-4">
-      <div className="max-w-5xl w-full bg-white rounded-xl shadow-lg overflow-hidden flex flex-col md:flex-row-reverse">
+    <div className={`min-h-screen flex items-center justify-center p-4 ${isDarkMode ? 'bg-gray-900' : 'bg-gray-100'}`}>
+      <div className={`max-w-5xl w-full ${isDarkMode ? 'bg-gray-800 text-white' : 'bg-white text-gray-900'} rounded-xl shadow-lg overflow-hidden flex flex-col md:flex-row`}>
         {/* Image Section */}
         <div className="md:w-1/2 p-4 h-64 md:h-auto">
           <img
@@ -45,7 +47,7 @@ const Signup = () => {
 
         {/* Form Section */}
         <div className="md:w-1/2 p-8">
-          <h2 className="text-2xl font-bold text-center text-gray-800 mb-6">Sign Up</h2>
+          <h2 className="text-2xl font-bold text-center mb-6">Sign Up</h2>
           
           {error && (
             <div className="mb-4 p-3 bg-red-100 text-red-700 rounded-md">
@@ -55,39 +57,33 @@ const Signup = () => {
 
           <form onSubmit={handleSubmit} className="space-y-4">
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
-                Full Name
-              </label>
+              <label className={`block text-sm font-medium mb-1 ${isDarkMode ? 'text-gray-300' : 'text-gray-700'}`}>Full Name</label>
               <input
                 type="text"
                 id="name"
                 value={formData.name}
                 onChange={handleChange}
                 required
-                className="w-full px-3 py-2 border border-gray-300 rounded-md bg-white text-gray-900 focus:ring-2 focus:ring-blue-500"
+                className={`w-full px-3 py-2 border rounded-md focus:ring-2 focus:ring-blue-500 ${isDarkMode ? 'bg-gray-700 border-gray-600 text-white placeholder-gray-400' : 'bg-white border-gray-300 text-gray-900'}`}
                 placeholder="Khushi Das"
               />
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
-                Email
-              </label>
+              <label className={`block text-sm font-medium mb-1 ${isDarkMode ? 'text-gray-300' : 'text-gray-700'}`}>Email</label>
               <input
                 type="email"
                 id="email"
                 value={formData.email}
                 onChange={handleChange}
                 required
-                className="w-full px-3 py-2 border border-gray-300 rounded-md bg-white text-gray-900 focus:ring-2 focus:ring-blue-500"
+                className={`w-full px-3 py-2 border rounded-md focus:ring-2 focus:ring-blue-500 ${isDarkMode ? 'bg-gray-700 border-gray-600 text-white placeholder-gray-400' : 'bg-white border-gray-300 text-gray-900'}`}
                 placeholder="you@example.com"
               />
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
-                Password
-              </label>
+              <label className={`block text-sm font-medium mb-1 ${isDarkMode ? 'text-gray-300' : 'text-gray-700'}`}>Password</label>
               <input
                 type="password"
                 id="password"
@@ -95,7 +91,7 @@ const Signup = () => {
                 onChange={handleChange}
                 required
                 minLength={6}
-                className="w-full px-3 py-2 border border-gray-300 rounded-md bg-white text-gray-900 focus:ring-2 focus:ring-blue-500"
+                className={`w-full px-3 py-2 border rounded-md focus:ring-2 focus:ring-blue-500 ${isDarkMode ? 'bg-gray-700 border-gray-600 text-white placeholder-gray-400' : 'bg-white border-gray-300 text-gray-900'}`}
                 placeholder="••••••••"
               />
             </div>
@@ -103,7 +99,7 @@ const Signup = () => {
             <button
               type="submit"
               disabled={loading}
-              className="w-full py-2 px-4 bg-blue-600 hover:bg-blue-700 text-white rounded-md disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer"
+              className={`w-full py-2 px-4 bg-blue-600 hover:bg-blue-700 text-white rounded-md disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer`}
             >
               {loading ? 'Signing up...' : 'Sign Up'}
             </button>
@@ -115,7 +111,7 @@ const Signup = () => {
                 <div className="w-full border-t border-gray-300"></div>
               </div>
               <div className="relative flex justify-center">
-                <span className="px-2 bg-white text-sm text-gray-500">
+                <span className={`px-2 ${isDarkMode ? 'bg-gray-800 text-gray-300' : 'bg-white text-gray-500'} text-sm`}>
                   Or continue with
                 </span>
               </div>
@@ -124,24 +120,23 @@ const Signup = () => {
             <div className="mt-6 grid grid-cols-2 gap-3">
               <button 
                 onClick={() => navigate('/GoogleLogin')}
-                className="flex items-center justify-center py-2 px-4 border border-gray-300 rounded-md hover:bg-gray-50 w-full"
+                className={`flex items-center justify-center py-2 px-4 border rounded-md hover:bg-gray-50 w-full ${isDarkMode ? 'border-gray-600' : 'border-gray-300'}`}
               >
                 <FcGoogle className="mr-2 text-lg" />
-                <span className="text-sm font-medium text-gray-700">Sign up with Google</span>
+                <span className="text-sm font-medium">Sign up with Google</span>
               </button>
 
               <button 
                 onClick={() => navigate('/GitHubLogin')}
-                className="flex items-center justify-center py-2 px-4 border border-gray-300 rounded-md hover:bg-gray-50 w-full"
+                className={`flex items-center justify-center py-2 px-4 border rounded-md hover:bg-gray-50 w-full ${isDarkMode ? 'border-gray-600' : 'border-gray-300'}`}
               >
-                <FaGithub className="mr-2 text-gray-800 text-lg" />
-                <span className="text-sm font-medium text-gray-700">Sign up with GitHub</span>
+                <FaGithub className="mr-2 text-lg" />
+                <span className="text-sm font-medium">Sign up with GitHub</span>
               </button>
             </div>
-
           </div>
 
-          <p className="mt-4 text-center text-sm text-gray-600">
+          <p className={`mt-4 text-center text-sm ${isDarkMode ? 'text-gray-300' : 'text-gray-600'}`}>
             Already have an account?{' '}
             <button
               onClick={() => navigate('/signin')}
@@ -152,6 +147,11 @@ const Signup = () => {
           </p>
         </div>
       </div>
+
+      {/* Dark/Light Mode Toggle Button */}
+      <button onClick={toggleTheme} className="absolute top-4 right-4 p-2 text-sm rounded bg-blue-500 text-white">
+        {isDarkMode ? 'Light Mode' : 'Dark Mode'}
+      </button>
     </div>
   );
 };
