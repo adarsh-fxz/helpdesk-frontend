@@ -6,9 +6,34 @@ import { useTheme } from '../context/ThemeContext';
 const Header = ({ setIsMobileOpen }) => {
   const [scrolled, setScrolled] = useState(false);
   const [showUserMenu, setShowUserMenu] = useState(false);
-  const userName = localStorage.getItem('name') || 'User';
-  const userRole = (localStorage.getItem('role') || '').toLowerCase();
+  const [userProfile, setUserProfile] = useState(null);
   const { isDarkMode, toggleTheme } = useTheme();
+
+  // Fetch user profile
+  useEffect(() => {
+    const fetchProfile = async () => {
+      try {
+        const response = await fetch('http://localhost:3000/api/user/profile', {
+          headers: {
+            'Authorization': `Bearer ${localStorage.getItem('token')}`
+          }
+        });
+
+        if (!response.ok) {
+          throw new Error('Failed to fetch profile');
+        }
+
+        const result = await response.json();
+        if (result.success && result.data) {
+          setUserProfile(result.data);
+        }
+      } catch (error) {
+        console.error('Error fetching profile:', error);
+      }
+    };
+
+    fetchProfile();
+  }, []);
 
   // Handle scroll effect
   useEffect(() => {
@@ -83,12 +108,16 @@ const Header = ({ setIsMobileOpen }) => {
               onClick={() => setShowUserMenu(!showUserMenu)}
               className="flex items-center focus:outline-none cursor-pointer"
             >
-              <div className="w-9 h-9 rounded-full bg-gradient-to-r from-blue-500 to-indigo-500 flex items-center justify-center text-white font-medium">
-                {userName.charAt(0).toUpperCase()}
+              <div className="w-9 h-9 rounded-full bg-gradient-to-br from-blue-500 to-indigo-500 flex items-center justify-center text-white font-medium">
+                {userProfile?.name?.split(' ')[0]?.charAt(0).toUpperCase() || 'U'}
               </div>
               <div className="hidden md:block ml-2 text-left">
-                <p className={`text-sm font-medium ${isDarkMode ? 'text-gray-300' : 'text-gray-700'}`}>{userName}</p>
-                <p className={`text-xs ${isDarkMode ? 'text-gray-400' : 'text-gray-500'} capitalize`}>{userRole}</p>
+                <p className={`text-sm font-medium ${isDarkMode ? 'text-gray-300' : 'text-gray-700'}`}>
+                  {userProfile?.name?.split(' ')[0] || 'User'}
+                </p>
+                <p className={`text-xs ${isDarkMode ? 'text-gray-400' : 'text-gray-500'} capitalize`}>
+                  {userProfile?.role?.toLowerCase() || 'user'}
+                </p>
               </div>
             </button>
             {/* Dropdown menu */}
