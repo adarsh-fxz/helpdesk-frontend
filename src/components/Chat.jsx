@@ -125,20 +125,24 @@ const Chat = ({ ticketId, onClose }) => {
             return (
               <div
                 key={message.id}
-                className={`flex ${isCurrentUser ? 'justify-end' : 'justify-start'}`}
+                className={`flex ${isCurrentUser ? 'justify-end' : 'justify-start'} mb-1`}
               >
                 <div
-                  className={`relative max-w-[75%] px-4 py-2 mb-2 rounded-2xl shadow-md break-words whitespace-pre-line
+                  className={`relative max-w-[75%] px-4 py-2 rounded-2xl shadow-md break-words whitespace-pre-line flex flex-col
                     ${isCurrentUser
                       ? 'bg-[#075e54] text-white rounded-br-md'
                       : isDarkMode
                         ? 'bg-gray-700 text-gray-100 rounded-bl-md'
                         : 'bg-gray-200 text-gray-900 rounded-bl-md'
                     }`}
+                  style={{paddingBottom: 6}}
                 >
-                  <div>{message.message}</div>
-                  <div className={`text-[0.75rem] opacity-70 mt-1 flex justify-end items-center ${isCurrentUser ? 'text-white' : (isDarkMode ? 'text-gray-300' : 'text-gray-600')}`} style={{fontSize: '0.75rem'}}>
-                    {new Date(message.createdAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', hour12: true })}
+                  <div className="flex items-end">
+                    <span className="flex-1" style={{wordBreak: 'break-word', display: 'inline-block'}}>{message.message}</span>
+                    <span className={`ml-3 text-[0.7em] opacity-70 ${isCurrentUser ? 'text-white' : (isDarkMode ? 'text-gray-300' : 'text-gray-600')}`}
+                      style={{whiteSpace: 'nowrap', alignSelf: 'flex-end'}}>
+                      {new Date(message.createdAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', hour12: true })}
+                    </span>
                   </div>
                 </div>
               </div>
