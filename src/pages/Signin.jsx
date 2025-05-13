@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import { FcGoogle } from 'react-icons/fc';
+import { FaSun, FaMoon } from 'react-icons/fa';
 import { useTheme } from '../context/ThemeContext'; // Adjust the path if needed
 
 const Signin = () => {
@@ -37,6 +38,7 @@ const Signin = () => {
   return (
     <div className={`min-h-screen flex items-center justify-center p-4 ${isDarkMode ? 'bg-gray-900' : 'bg-gray-100'}`}>
       <div className={`max-w-5xl w-full ${isDarkMode ? 'bg-gray-800 text-white' : 'bg-white text-gray-900'} rounded-xl shadow-lg overflow-hidden flex flex-col md:flex-row`}>
+        
         {/* Image Section */}
         <div className="md:w-1/2 p-4 h-64 md:h-auto">
           <img
@@ -58,26 +60,29 @@ const Signin = () => {
 
           <form onSubmit={handleSubmit} className="space-y-4">
             <div>
-              <label className={`block text-sm font-medium mb-1 ${isDarkMode ? 'text-gray-300' : 'text-gray-700'}`}>Email</label>
+              <label htmlFor="email" className={`block text-sm font-medium mb-1 ${isDarkMode ? 'text-gray-300' : 'text-gray-700'}`}>Email</label>
               <input
                 type="email"
                 id="email"
                 value={formData.email}
                 onChange={handleChange}
                 required
+                autoComplete="email"
                 className={`w-full px-3 py-2 border rounded-md focus:ring-2 focus:ring-blue-500 ${isDarkMode ? 'bg-gray-700 border-gray-600 text-white placeholder-gray-400' : 'bg-white border-gray-300 text-gray-900'}`}
                 placeholder="you@example.com"
               />
             </div>
 
             <div>
-              <label className={`block text-sm font-medium mb-1 ${isDarkMode ? 'text-gray-300' : 'text-gray-700'}`}>Password</label>
+              <label htmlFor="password" className={`block text-sm font-medium mb-1 ${isDarkMode ? 'text-gray-300' : 'text-gray-700'}`}>Password</label>
               <input
                 type="password"
                 id="password"
                 value={formData.password}
                 onChange={handleChange}
                 required
+                minLength={6}
+                autoComplete="current-password"
                 className={`w-full px-3 py-2 border rounded-md focus:ring-2 focus:ring-blue-500 ${isDarkMode ? 'bg-gray-700 border-gray-600 text-white placeholder-gray-400' : 'bg-white border-gray-300 text-gray-900'}`}
                 placeholder="••••••••"
               />
@@ -102,6 +107,7 @@ const Signin = () => {
             </button>
           </form>
 
+          {/* Divider */}
           <div className="mt-6">
             <div className="relative">
               <div className="absolute inset-0 flex items-center">
@@ -114,18 +120,19 @@ const Signin = () => {
               </div>
             </div>
 
-            {/* Google Sign-In Button */}
-            <div className="mt-6">
+            {/* Google Sign-In Button (copied from Signup) */}
+            <div className="mt-6 flex justify-center">
               <button 
                 onClick={() => navigate('/GoogleLogin')}
-                className={`flex items-center justify-center py-2 px-4 border rounded-md hover:bg-gray-50 w-full ${isDarkMode ? 'border-gray-600 bg-gray-700 text-white' : 'border-gray-300 bg-white text-gray-700'}`}
+                className={`flex items-center justify-center py-2 px-4 border rounded-md hover:bg-gray-50 ${isDarkMode ? 'border-gray-600' : 'border-gray-300'}`}
               >
-                <FcGoogle className="mr-2 text-xl" />
+                <FcGoogle className="mr-2 text-lg" />
                 <span className="text-sm font-medium">Sign in with Google</span>
               </button>
             </div>
           </div>
 
+          {/* Link to Signup */}
           <p className={`mt-4 text-center text-sm ${isDarkMode ? 'text-gray-300' : 'text-gray-600'}`}>
             Don't have an account?{' '}
             <button
@@ -138,9 +145,13 @@ const Signin = () => {
         </div>
       </div>
 
-      {/* Dark/Light Mode Toggle Button */}
-      <button onClick={toggleTheme} className="absolute top-4 right-4 p-2 text-sm rounded bg-blue-500 text-white">
-        {isDarkMode ? 'Light Mode' : 'Dark Mode'}
+      {/* Dark/Light Mode Toggle Icon */}
+      <button
+        onClick={toggleTheme}
+        className="absolute top-4 right-4 p-3 rounded-full bg-blue-500 text-white hover:bg-blue-600 transition"
+        aria-label="Toggle theme"
+      >
+        {isDarkMode ? <FaSun size={20} /> : <FaMoon size={20} />}
       </button>
     </div>
   );

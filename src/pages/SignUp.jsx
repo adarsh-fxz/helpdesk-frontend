@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import { FcGoogle } from 'react-icons/fc';
+import { FaSun, FaMoon } from 'react-icons/fa'; // Added icons
 import { useTheme } from '../context/ThemeContext';
 
 const Signup = () => {
@@ -141,9 +142,13 @@ const Signup = () => {
         </div>
       </div>
 
-      {/* Dark/Light Mode Toggle Button */}
-      <button onClick={toggleTheme} className="absolute top-4 right-4 p-2 text-sm rounded bg-blue-500 text-white">
-        {isDarkMode ? 'Light Mode' : 'Dark Mode'}
+      {/* Dark/Light Mode Toggle Button with Icons */}
+      <button
+        onClick={toggleTheme}
+        className="absolute top-4 right-4 p-2 rounded-full bg-blue-500 text-white hover:bg-blue-600 transition-transform duration-300 transform hover:scale-110"
+        aria-label="Toggle dark/light mode"
+      >
+        {isDarkMode ? <FaSun size={20} /> : <FaMoon size={20} />}
       </button>
     </div>
   );
