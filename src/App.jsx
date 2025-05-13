@@ -17,9 +17,18 @@ import HelpDocs from './components/HelpDocs';
 import Feedback from './components/Feedback';
 import AssignedTickets from './components/AssignedTickets';
 import { ThemeProvider } from './context/ThemeContext';
+import GoogleLogin from "./pages/GoogleLogin";
+import { GoogleOAuthProvider } from "@react-oauth/google";
+import GitHubLogin from './pages/GithubLogin'; 
 
 function App() {
-
+  const GoogleAuthWrapper = ()=>{
+    return(
+      <GoogleOAuthProvider clientId="50715318154-og09sopullkej6gdr0dbn7ogk46bcq04.apps.googleusercontent.com">
+        <GoogleLogin></GoogleLogin>
+      </GoogleOAuthProvider>
+    )
+  }
   return (
     <ThemeProvider>
       <BrowserRouter>
@@ -27,6 +36,8 @@ function App() {
           <Route path="/" element={<HomePage />} />
           <Route path="/Signin" element={<Signin />} />
           <Route path="/signup" element={<SignUp />} />
+          <Route path="/GoogleLogin" element={<GoogleAuthWrapper/>}/>
+          <Route path="/GithubLogin" element={<GitHubLogin/>}/>
           <Route path="/my-profile" element={<MyProfile />} />
           <Route path="/dashboard" element={<Dashboard />} />
           <Route path="/dashboard/settings" element={
