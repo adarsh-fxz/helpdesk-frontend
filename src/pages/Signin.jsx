@@ -1,9 +1,8 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
-import { FaGithub } from 'react-icons/fa';
-import { FcGoogle } from 'react-icons/fc'; // Updated Google icon import
-import { useTheme } from '../context/ThemeContext'; // Adjust the path to where ThemeContext is
+import { FcGoogle } from 'react-icons/fc';
+import { useTheme } from '../context/ThemeContext'; // Adjust the path if needed
 
 const Signin = () => {
   const navigate = useNavigate();
@@ -97,7 +96,7 @@ const Signin = () => {
             <button
               type="submit"
               disabled={loading}
-              className={`w-full py-2 px-4 bg-blue-600 hover:bg-blue-700 text-white rounded-md disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer`}
+              className="w-full py-2 px-4 bg-blue-600 hover:bg-blue-700 text-white rounded-md disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer"
             >
               {loading ? 'Signing in...' : 'Sign In'}
             </button>
@@ -115,21 +114,14 @@ const Signin = () => {
               </div>
             </div>
 
-            <div className="mt-6 grid grid-cols-2 gap-3">
+            {/* Google Sign-In Button */}
+            <div className="mt-6">
               <button 
                 onClick={() => navigate('/GoogleLogin')}
-                className={`flex items-center justify-center py-2 px-4 border rounded-md hover:bg-gray-50 w-full ${isDarkMode ? 'border-gray-600' : 'border-gray-300'}`}
+                className={`flex items-center justify-center py-2 px-4 border rounded-md hover:bg-gray-50 w-full ${isDarkMode ? 'border-gray-600 bg-gray-700 text-white' : 'border-gray-300 bg-white text-gray-700'}`}
               >
-                <FcGoogle className="mr-2 text-lg" />
+                <FcGoogle className="mr-2 text-xl" />
                 <span className="text-sm font-medium">Sign in with Google</span>
-              </button>
-
-              <button 
-                onClick={() => navigate('/GithubLogin')}
-                className={`flex items-center justify-center py-2 px-4 border rounded-md hover:bg-gray-50 w-full ${isDarkMode ? 'border-gray-600' : 'border-gray-300'}`}
-              >
-                <FaGithub className="mr-2 text-lg" />
-                <span className="text-sm font-medium">Sign in with GitHub</span>
               </button>
             </div>
           </div>

@@ -19,6 +19,8 @@ const GoogleLogin = () => {
       });
 
       localStorage.setItem('token', res.data.token);
+      localStorage.setItem('role', res.data.user.role);  // 👈 Needed for Sidebar
+      localStorage.setItem('userId', res.data.user.id);  // 👈 Optional, but often useful
       navigate('/dashboard');
     } catch (err) {
       console.error('Login error:', err);
