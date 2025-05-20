@@ -114,6 +114,8 @@ const Header = ({ setIsMobileOpen }) => {
                   src={userProfile.profilePicture}
                   alt="Profile"
                   className="w-full h-full object-cover"
+                  loading='lazy'
+                  referrerPolicy="no-referrer"
                 />
               ) : (
                 <span>

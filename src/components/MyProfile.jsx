@@ -191,6 +191,8 @@ const MyProfile = () => {
                 src={profile.profilePicture}
                 alt="Profile"
                 className="w-full h-full object-cover"
+                referrerPolicy="no-referrer"
+                loading='lazy'
               />
             ) : (
               <div className="w-full h-full flex items-center justify-center bg-gradient-to-br from-blue-400 to-blue-600">

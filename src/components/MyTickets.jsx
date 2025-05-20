@@ -149,6 +149,8 @@ const MyTickets = () => {
                     src={ticket.createdBy.profilePicture}
                     alt="Profile"
                     className="w-6 h-6 sm:w-7 sm:h-7 rounded-full object-cover"
+                    loading='lazy'
+                    referrerPolicy="no-referrer"
                   />
                 ) : (
                   <div className={`w-6 h-6 sm:w-7 sm:h-7 rounded-full flex items-center justify-center ${isDarkMode ? 'bg-blue-950' : 'bg-blue-100'}`}>
