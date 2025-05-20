@@ -249,9 +249,19 @@ const AssignedTickets = () => {
                       <div className="flex items-center justify-between text-sm">
                         <div className="flex items-center gap-3">
                           <div className={`w-8 h-8 rounded-full flex items-center justify-center ${isDarkMode ? 'bg-blue-900' : 'bg-blue-200'}`}> 
-                            <span className={`text-base font-medium ${isDarkMode ? 'text-blue-300' : 'text-blue-700'}`}> 
-                              {ticket.createdBy?.name?.charAt(0)?.toUpperCase() || '?'}
-                            </span>
+                            {ticket.createdBy?.profilePicture ? (
+                            <img
+                              src={ticket.createdBy.profilePicture}
+                              alt="Profile"
+                              className="w-6 h-6 sm:w-7 sm:h-7 rounded-full object-cover"
+                            />
+                            ) : (
+                            <div className={`w-6 h-6 sm:w-7 sm:h-7 rounded-full flex items-center justify-center ${isDarkMode ? 'bg-blue-950' : 'bg-blue-100'}`}>
+                              <span className={`text-xs font-medium ${isDarkMode ? 'text-blue-300' : 'text-blue-600'}`}>
+                                {ticket.createdBy?.name?.charAt(0)?.toUpperCase() || '?'}
+                              </span>
+                            </div>
+                          )}
                           </div>
                           <div className="flex flex-col">
                             <span className="font-semibold text-base">{ticket.createdBy?.name || 'Unknown'}</span>
