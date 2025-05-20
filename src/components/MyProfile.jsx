@@ -185,12 +185,23 @@ const MyProfile = () => {
         {/* Profile picture and basic info */}
         <div className="flex flex-col sm:flex-row items-center sm:items-start">
           <div className="relative -mt-16 sm:-mt-20">
-            <div className="w-24 h-24 sm:w-32 sm:h-32 rounded-full flex items-center justify-center
-              shadow-lg border-4 bg-gradient-to-br from-blue-400 to-blue-600 border-white">
-              <span className="text-4xl sm:text-5xl font-bold text-white">
-                {profile.name?.charAt(0).toUpperCase() || '?'}
-              </span>
-            </div>
+          <div className="w-24 h-24 sm:w-32 sm:h-32 rounded-full overflow-hidden shadow-lg border-4 border-white bg-gray-200">
+            {profile.profilePicture ? (
+              <img
+                src={profile.profilePicture}
+                alt="Profile"
+                className="w-full h-full object-cover"
+                referrerPolicy="no-referrer"
+                loading='lazy'
+              />
+            ) : (
+              <div className="w-full h-full flex items-center justify-center bg-gradient-to-br from-blue-400 to-blue-600">
+                <span className="text-4xl sm:text-5xl font-bold text-white">
+                  {profile.name?.charAt(0).toUpperCase() || '?'}
+                </span>
+              </div>
+            )}
+          </div>
           </div>
           
           <div className="text-center sm:text-left sm:ml-6 mt-3 sm:mt-0">

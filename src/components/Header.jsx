@@ -108,9 +108,21 @@ const Header = ({ setIsMobileOpen }) => {
               onClick={() => setShowUserMenu(!showUserMenu)}
               className="flex items-center focus:outline-none cursor-pointer"
             >
-              <div className="w-9 h-9 rounded-full bg-gradient-to-br from-blue-500 to-indigo-500 flex items-center justify-center text-white font-medium">
-                {userProfile?.name?.split(' ')[0]?.charAt(0).toUpperCase() || 'U'}
-              </div>
+            <div className="w-9 h-9 rounded-full overflow-hidden bg-gradient-to-br from-blue-500 to-indigo-500 flex items-center justify-center text-white font-medium">
+              {userProfile?.profilePicture ? (
+                <img
+                  src={userProfile.profilePicture}
+                  alt="Profile"
+                  className="w-full h-full object-cover"
+                  loading='lazy'
+                  referrerPolicy="no-referrer"
+                />
+              ) : (
+                <span>
+                  {userProfile?.name?.split(' ')[0]?.charAt(0).toUpperCase() || 'U'}
+                </span>
+              )}
+            </div>
               <div className="hidden md:block ml-2 text-left">
                 <p className={`text-sm font-medium ${isDarkMode ? 'text-gray-300' : 'text-gray-700'}`}>
                   {userProfile?.name?.split(' ')[0] || 'User'}
